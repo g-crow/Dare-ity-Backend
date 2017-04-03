@@ -1,0 +1,25 @@
+{
+  "name": "dare-ity",
+  "version": "1.0.0",
+  "description": "This is the MTCS05 Dare-ity backend repository!",
+  "main": "config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/g-crow/Dare-ity.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/g-crow/Dare-ity/issues"
+  },
+  "homepage": "https://github.com/g-crow/Dare-ity#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "morgan": "^1.8.1"
+  }
+}
