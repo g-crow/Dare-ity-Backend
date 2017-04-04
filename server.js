@@ -32,6 +32,25 @@ app.get('*', function(req, res){
 		}
   })
 })
+app.post('/api/create_user', function(req, res){
+  var username = req.body.name;
+  var user_id = req.body.user_id;
+  var password = req.body.hashed_password;
+  var is_npo = req.body.is_npo;
+  if(username === undefined || user_id === undefined || password === undefined || is_npo === undefined){
+    
+  }
+  var queryString = "INSERT INTO dareity_user (name, user_id, hashed_password, is_npo) "
+    + "VALUES ('" + username + "', " + user_id + ", '" + password + "', " + is_npo + ")"
+    console.log(queryString);
+	pool.query(queryString, function(err, result){
+    if(err){
+			console.error("error",err.message);
+		} else {
+			res.json(JSON.stringify(result))
+		}
+  })
+})
 
 app.post('/api/fetch_user', function(req, res){
   var username = req.body.dareity_user;
