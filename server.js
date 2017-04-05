@@ -5,6 +5,7 @@ var morgan = require('morgan');
 var config = require('./config');
 var jwt = require('jsonwebtoken');
 var User = require('./server/models/user');
+var Pool = require('pg').Pool;
 
 // database.connect(config.database);
 app.set('superSecret', config.secret);
@@ -36,7 +37,7 @@ apiRoutes.post('/authenticate', function(req, res) {
         res.json({ success: false, message: 'Authentication failed. Wrong password.' });
       } else {
         var token = jwt.sign(user, app.get('superSecret'), {
-          expiresInMinutes: 1440 // expires in 24 hours
+          expiresIn: 1440 // expires in 24 hours
         });
         res.json({
           success: true,
