@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt')
 const config = require('../../config')
+var db = require('../../db')
 
-export default class User(){
+class User{
 	constructor(username, password, is_npo){
 		this.username = username;
 		this.password = password;
@@ -9,14 +10,14 @@ export default class User(){
 	}
 
 	save(callback){
-		if (!username || !password){
+		if (!this.username || !this.password){
 			callback(new Error('No Username or password provided'))
 		} else {
 			const hashed_password = ''
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
 				if (!hashErr){
 					const queryString = `INSERT INTO dareity_user (name, hashed_password, is_npo) VALUES ('${this.username}', '${hashed_password}', ${this.is_npo})`
-					pool.query(queryString, callback)
+					db.query(queryString, callback)
 				} else {
 					callback(hashErr)
 				}
@@ -26,3 +27,4 @@ export default class User(){
 		}
 	}
 }
+module.exports = User

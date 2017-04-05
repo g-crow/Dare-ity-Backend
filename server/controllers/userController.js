@@ -1,7 +1,10 @@
 const User = require('../models/user');
-const config = require('./config');
+const config = require('../../config');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const express = require('express');
+const app = express();
+
 
 app.set('superSecret', config.secret);
 
@@ -16,7 +19,7 @@ exports.createuser = function(req, res){
   } = req.body;
   var user = new User(username, password, is_npo)
   user.save((err, user)=> err ? res.status(500).json(err) : res.json(user))
-})
+}
 
 exports.authenticate = function(req, res) {
   User.findOne({
@@ -40,9 +43,10 @@ exports.authenticate = function(req, res) {
             token: token
           });
         }
-      }
-    });
-  });
+      });
+    }
+  }
+  )
 }
 
 apiRoutes.use(function(req, res, next) {
