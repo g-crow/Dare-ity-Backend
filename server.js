@@ -20,16 +20,16 @@ process.on('unhandledRejection', function(e) {
   console.log(e.message, e.stack)
 })
 
-//GET
-app.get('*', function(req, res){
-	pool.query('SELECT * FROM dareity_user', function(err, result){
-    if(err){
-			console.error("error",err.message);
-		} else {
-			res.json(JSON.stringify(result))
-		}
-  })
-});
+// //GET
+// app.get('*', function(req, res){
+// 	pool.query('SELECT * FROM dareity_user', function(err, result){
+//     if(err){
+// 			console.error("error",err.message);
+// 		} else {
+// 			res.json(JSON.stringify(result))
+// 		}
+//   })
+// });
 
 app.get('/', function(req, res) {
   res.json({ message: 'Dare-ity api launched!' });
@@ -39,6 +39,7 @@ app.use('/api', apiRoutes);
 
 //POST
 apiRoutes.post('/create_user', usercontroller.createuser);
+apiRoutes.post('/authenticate', usercontroller.authenticate);
 
 app.post('/api/fetch_user', function(req, res){
   var username = req.body.dareity_user;

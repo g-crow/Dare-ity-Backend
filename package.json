@@ -18,9 +18,10 @@
   },
   "homepage": "https://github.com/g-crow/Dare-ity#readme",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "jsonwebtoken": "^7.3.0",
-    "morgan": "^1.8.1",
+    "morgan": "^1.8.1"
   }
 }
