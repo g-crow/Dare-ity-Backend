@@ -11,10 +11,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 
+
 var pool = new Pool(config);
 
 process.on('unhandledRejection', function(e) {
   console.log(e.message, e.stack)
+})
+
+app.get('/api/test', function(req, res){
+  res.json("this test works");
 })
 
 app.get('*', function(req, res){
@@ -26,12 +31,13 @@ app.get('*', function(req, res){
 		}
   })
 })
+
 app.post('/api/create_user', function(req, res){
   const {username, user_id, hashed_password, is_npo} = req.body;
-  // var username = req.body.name;
-  // var user_id = req.body.user_id;
-  // var password = req.body.hashed_password;
-  // var is_npo = req.body.is_npo;
+  var username = req.body.name;
+  var user_id = req.body.user_id;
+  var password = req.body.hashed_password;
+  var is_npo = req.body.is_npo;
   if(username === undefined || user_id === undefined || hashed_password === undefined || is_npo === undefined){
     res.json(JSON.stringify("Please fill empty fields"));
   }
@@ -58,4 +64,5 @@ app.post('/api/fetch_user', function(req, res){
   })
 })
 
-app.listen(process.env.PORT || 3001);
+var server = app.listen(process.env.PORT || 3001);
+module.exports = server;

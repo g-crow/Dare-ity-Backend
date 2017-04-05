@@ -4,7 +4,7 @@
   "description": "This is the MTCS05 Dare-ity backend repository!",
   "main": "config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node server.js"
   },
   "repository": {
@@ -21,6 +21,10 @@
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "jsonwebtoken": "^7.3.0",
-    "morgan": "^1.8.1",
+    "morgan": "^1.8.1"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "chai-http": "^1.0.0"
   }
 }
