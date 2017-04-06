@@ -32,9 +32,26 @@ app.get('*', function(req, res){
   })
 })
 
+app.post('/api/create_dare', function(req, res){
+  const {dare_title, dare_description, npo_creator} = req.body;
+  if(dare_title === undefined || dare_description === undefined || npo_creator === undefined){
+    res.json(JSON.stringify("Please fill empty fields."));
+  }
+  var queryString = "INSERT INTO dare (dare_title, dare_description, npo_creator) "
+    + "VALUES ('" + dare_title + "', '" + dare_description + "', " + npo_creator + ")"
+  pool.query(queryString, function(err, result){
+    if(err){
+      console.error("error", err.message);
+    } else {
+      res.json(JSON.stringify(result))
+    }
+  })
+})
+
+
 app.post('/api/create_user', function(req, res){
-  const {username, user_id, hashed_password, is_npo} = req.body;
-  var username = req.body.name;
+  // const {username, user_id, hashed_password, is_npo} = req.body;
+  var username = req.body.user
   var user_id = req.body.user_id;
   var password = req.body.hashed_password;
   var is_npo = req.body.is_npo;
