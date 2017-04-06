@@ -1,10 +1,10 @@
 module.exports = {
   'secret': 'cohort5rocksmysocks',
   'saltRounds': 10,
-  db: {
+   db: {
     host: 'localhost',
     user: 'rebeccaking',
     password: 'XXXXX',
     database: 'dareity'
   }
-}
+};
