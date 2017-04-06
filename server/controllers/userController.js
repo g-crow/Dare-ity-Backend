@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const app = express();
-
+const db = require('../../db')
 
 app.set('superSecret', config.secret);
 
@@ -22,19 +22,19 @@ exports.createuser = function(req, res){
 }
 
 exports.authenticate = function(req, res) {
-  User.findOne({
-    name: req.body.username
-  }, 
-  function(err, username) {
+  var username = req.body.username;
+  console.log(username)
+    db.query("SELECT name, is_npo FROM dareity_user WHERE name = '" + username + "'", 
+  function(err, result) {
     if (err) throw err;
-    if (!user) {
+    if (!username) {
       res.json({ success: false, message: 'Authentication failed. User not found.' });
     } else {
-      bcrypt.compare(this.password, user.hashed_password, function(err, passwordValid){
+      bcrypt.compare(this.password, username.hashed_password, function(err, passwordValid){
         if (passwordValid == false) {
           res.json({ success: false, message: 'Authentication failed. Wrong password.' });
         } else {
-          var token = jwt.sign(user, app.get('superSecret'), {
+          var token = jwt.sign(username, app.get('superSecret'), {
             expiresIn: 1440 // expires in 24 hours
           });
           res.json({
