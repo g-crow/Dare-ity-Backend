@@ -1,49 +1,50 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var morgan = require('morgan');
-var config = require('./config');
-var jwt = require('jsonwebtoken');
-var Pool = require('pg').Pool;
-var bodyParser = require('body-parser');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const config = require('./config');
+const jwt = require('jsonwebtoken');
+const User = require('./server/models/user');
+const usercontroller = require('./server/controllers/userController');
+const db = require('./db')
+const { requireLogin } = require('./server/models/user')
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(morgan('dev'));
-
-var pool = new Pool(config);
-
-process.on('unhandledRejection', function(e) {
-  console.log(e.message, e.stack)
-})
-
-app.post('/api/create_user', function(req, res){
-  const {username, hashed_password, is_npo} = req.body;
-  if(username === undefined || hashed_password === undefined || is_npo === undefined){
-    res.json(JSON.stringify("Please fill empty fields."));
-    res.end()
+db.connect((err, res)=>{
+  if(err) {
+    throw new Error(err.message);
   }
-  var queryString = "INSERT INTO user (name, password, is_npo) "
-    + "VALUES ('" + username + "', '" + hashed_password + "', " + is_npo + ")"
-	pool.query(queryString, function(err, result){
-    if(err){
-			console.error("error", err.message);
-		} else {
-			res.json(JSON.stringify(result))
-		}
-  })
-})
 
-app.post('/api/fetch_user', function(req, res){
-  var username = req.body.username;
-	pool.query("SELECT id, name, is_npo FROM user WHERE name = '" + username + "'", function(err, result){
-    if(err){
-			console.error("error", err.message);
-		} else {
-			res.json(JSON.stringify(result))
-		}
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+
+  app.use(morgan('dev'));
+
+
+  //API Routes
+  var apiRoutes = express.Router();
+
+  app.get('/', function(req, res) {
+    res.json({ message: 'Dare-ity api launched!' });
+  });
+
+  app.use('/api', apiRoutes);
+
+  //POST
+  apiRoutes.post('/create_user', usercontroller.createuser);
+  apiRoutes.post('/authenticate', usercontroller.authenticate);
+
+
+  app.post('/api/fetch_user', function(req, res){
+    var username = req.body.username;
+    pool.query("SELECT id, name, is_npo FROM user WHERE name = '" + username + "'", function(err, result){
+      if(err){
+        console.error("error", err.message);
+      } else {
+        res.json(result))
+      }
+    })
   })
-})
+
 
 app.post('/api/create_dare', function(req, res){
   const {dare_title, dare_description, npo_creator} = req.body;
@@ -60,7 +61,7 @@ app.post('/api/create_dare', function(req, res){
 			res.json(JSON.stringify(result))
 		}
   })
-})
+
 
 app.post('/api/fetch_dare', function(req, res){
 	var id = req.body.id;
@@ -71,8 +72,8 @@ app.post('/api/fetch_dare', function(req, res){
 		} else {
 			res.json(JSON.stringify(result.rows[0]))
 		}
+
   })
-})
 
 app.post('/api/create_client_dare', function(req, res){
   const {broadcaster_id, dare_id, npo_id} = req.body;
@@ -91,7 +92,7 @@ app.post('/api/create_client_dare', function(req, res){
   })
 })
 
-app.post('/api/fetch_client_dare', function(req, res){
+app.post('/api/fetch_user_dare', function(req, res){
 	var id = req.body.id;
 	var queryString = "SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = " + id
 	pool.query(queryString, function(err, result){
@@ -116,4 +117,6 @@ app.post('/api/delete_record', function(req, res){
   })
 })
 
-app.listen(process.env.PORT || 3001);
+  app.listen(process.env.PORT || 3001);
+  console.log('magic');
+}
