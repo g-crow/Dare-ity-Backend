@@ -1,92 +1,104 @@
--- Table: public.client
 
--- DROP TABLE public.client;
-
-CREATE TABLE public.client
+CREATE TABLE public.dareity_user
 (
   id integer NOT NULL DEFAULT nextval('client_id_seq'::regclass),
   name character varying(80) NOT NULL,
-  hash_password character varying(80) NOT NULL,
+  password character varying(80) NOT NULL,
   is_npo boolean NOT NULL DEFAULT false,
   CONSTRAINT "Client Primary Key" PRIMARY KEY (id),
   CONSTRAINT "unique name" UNIQUE (name)
 )
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public.client
-  OWNER TO dareity;
 
 
 
 
-
--- Table: public.client_dare
-
--- DROP TABLE public.client_dare;
-
-CREATE TABLE public.client_dare
+CREATE TABLE public.user_dare
 (
-  client_dare_id integer NOT NULL DEFAULT nextval('client_dare_client_dare_id_seq'::regclass),
-  client_id integer NOT NULL,
+  id integer NOT NULL DEFAULT nextval('client_dare_client_dare_id_seq'::regclass),
+  broadcaster_id integer NOT NULL,
   dare_id integer NOT NULL,
-  pledge_total money NOT NULL,
+  pledge_amount_threshold money NOT NULL,
   npo_id integer NOT NULL,
-  CONSTRAINT "primary client dare key" PRIMARY KEY (client_dare_id)
+  pledge_status money NOT NULL DEFAULT 0,
+  CONSTRAINT "primary client dare key" PRIMARY KEY (id)
 )
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public.client_dare
-  OWNER TO dareity;
 
 
 
-
-
--- Table: public.dare
-
--- DROP TABLE public.dare;
 
 CREATE TABLE public.dare
 (
-  id_dare integer NOT NULL DEFAULT nextval('dare_id_dare_seq'::regclass),
-  dare_title character varying(150) NOT NULL,
-  dare_description text NOT NULL,
+  id integer NOT NULL DEFAULT nextval('dare_id_dare_seq'::regclass),
+  title character varying(150) NOT NULL,
+  description text NOT NULL,
   npo_creator integer NOT NULL,
-  dare_expires date NOT NULL,
-  total_pledge_dollar_amount money,
-  CONSTRAINT dare_primary_key PRIMARY KEY (id_dare),
-  CONSTRAINT "unique dare title" UNIQUE (dare_title)
+  expiration date NOT NULL DEFAULT (('now'::text)::date + '30 days'::interval),
+  total_pledge_amount money,
+  pledge_threshold money NOT NULL DEFAULT 10.00,
+  CONSTRAINT dare_primary_key PRIMARY KEY (id),
+  CONSTRAINT "unique dare title" UNIQUE (title)
 )
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public.dare
-  OWNER TO dareity;
 
 
 
-
-
--- Table: public.pledge
-
--- DROP TABLE public.pledge;
 
 CREATE TABLE public.pledge
 (
-  id_pledge integer NOT NULL DEFAULT nextval('id_pledge_id_pledge_seq'::regclass),
+  id integer NOT NULL DEFAULT nextval('id_pledge_id_pledge_seq'::regclass),
   broadcaster_id integer NOT NULL,
   npo_id integer NOT NULL,
   dare_id integer NOT NULL,
   pledge_amount money NOT NULL,
-  fulfilled boolean NOT NULL DEFAULT false,
-  client_dare_id integer NOT NULL,
-  CONSTRAINT "primary pledge key" PRIMARY KEY (id_pledge)
+  dare_fulfilled boolean NOT NULL DEFAULT false,
+  user_dare_id integer NOT NULL,
+  CONSTRAINT "primary pledge key" PRIMARY KEY (id)
 )
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public.pledge
-  OWNER TO dareity;
 
+
+
+
+
+
+
+
+
+
+TABLE dareity_user
+(
+  id integer NOT NULL,
+  name character varying(80) NOT NULL,
+  password character varying(80) NOT NULL,
+  is_npo boolean NOT NULL DEFAULT false
+)
+
+TABLE user_dare
+(
+  id integer NOT NULL,
+  broadcaster_id integer NOT NULL,
+  dare_id integer NOT NULL,
+  pledge_amount_threshold money NOT NULL,
+  npo_id integer NOT NULL,
+  pledge_status money NOT NULL DEFAULT 0
+)
+
+TABLE dare
+(
+  id integer NOT NULL,
+  title character varying(150) NOT NULL,
+  description text NOT NULL,
+  npo_creator integer NOT NULL,
+  expiration date NOT NULL,
+  total_pledge_amount money,
+  pledge_threshold money NOT NULL DEFAULT 10.00
+)
+
+TABLE pledge
+(
+  id integer NOT NULL,
+  broadcaster_id integer NOT NULL,
+  npo_id integer NOT NULL,
+  dare_id integer NOT NULL,
+  pledge_amount money NOT NULL,
+  dare_fulfilled boolean NOT NULL DEFAULT false,
+  user_dare_id integer NOT NULL
+)

@@ -23,7 +23,7 @@ app.post('/api/create_user', function(req, res){
     res.json(JSON.stringify("Please fill empty fields."));
     res.end()
   }
-  var queryString = "INSERT INTO client (name, hash_password, is_npo) "
+  var queryString = "INSERT INTO user (name, password, is_npo) "
     + "VALUES ('" + username + "', '" + hashed_password + "', " + is_npo + ")"
 	pool.query(queryString, function(err, result){
     if(err){
@@ -36,7 +36,7 @@ app.post('/api/create_user', function(req, res){
 
 app.post('/api/fetch_user', function(req, res){
   var username = req.body.username;
-	pool.query("SELECT id, name, is_npo FROM client WHERE name = '" + username + "'", function(err, result){
+	pool.query("SELECT id, name, is_npo FROM user WHERE name = '" + username + "'", function(err, result){
     if(err){
 			console.error("error", err.message);
 		} else {
@@ -51,7 +51,7 @@ app.post('/api/create_dare', function(req, res){
     res.json(JSON.stringify("Please fill empty fields."))
     res.end()
   }
-  var queryString = "INSERT INTO dare (dare_title, dare_description, npo_creator) "
+  var queryString = "INSERT INTO dare (title, description, npo_creator) "
     + "VALUES ('" + dare_title + "', '" + dare_description + "', " + npo_creator + ")"
 	pool.query(queryString, function(err, result){
     if(err){
@@ -64,7 +64,7 @@ app.post('/api/create_dare', function(req, res){
 
 app.post('/api/fetch_dare', function(req, res){
 	var id = req.body.id;
-	var queryString = "SELECT id_dare, dare_title, dare_description, npo_creator, dare_expires, total_pledge_dollar_amount FROM dare WHERE id_dare = " + id
+	var queryString = "SELECT id, title, description, npo_creator, expiration, total_pledge_amount FROM dare WHERE id = " + id
 	pool.query(queryString, function(err, result){
     if(err){
 			console.error("error", err.message)
@@ -81,7 +81,7 @@ app.post('/api/create_client_dare', function(req, res){
     res.end()
   }
   var queryString = "INSERT INTO client_dare (broadcaster_id, dare_id, npo_id, pledge_amount_threshold) "
-    + "VALUES (" + broadcaster_id + ", " + dare_id + ", " + npo_id + ", (SELECT pledge_threshold FROM dare WHERE id_dare = " + dare_id + "))"
+    + "VALUES (" + broadcaster_id + ", " + dare_id + ", " + npo_id + ", (SELECT pledge_threshold FROM dare WHERE id = " + dare_id + "))"
 	pool.query(queryString, function(err, result){
     if(err){
 			console.error("error", err.message)
@@ -93,7 +93,7 @@ app.post('/api/create_client_dare', function(req, res){
 
 app.post('/api/fetch_client_dare', function(req, res){
 	var id = req.body.id;
-	var queryString = "SELECT client_dare_id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, current_pledge_status FROM client_dare WHERE client_dare_id = " + id
+	var queryString = "SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = " + id
 	pool.query(queryString, function(err, result){
     if(err){
 			console.error("error", err.message)
