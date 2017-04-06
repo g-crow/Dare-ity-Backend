@@ -32,21 +32,10 @@ db.connect((err, res)=>{
   apiRoutes.post('/create_user', usercontroller.createuser);
   apiRoutes.post('/authenticate', usercontroller.authenticate);
 
-  app.post('/api/fetch_user', function(req, res){
-    var username = req.body.dareity_user;
-    db.query("SELECT user_id, name, is_npo FROM dareity_user WHERE name = '" + username + "'", function(err, result){
-      if(err){
-        console.error("error",err.message);
-      } else {
-        res.json(result.rows)
-      }
-    })
-  })
-
   app.post('/api/create_user', function(req, res){
     const {username, hashed_password, is_npo} = req.body;
     if(username === undefined || hashed_password === undefined || is_npo === undefined){
-      res.json(JSON.stringify("Please fill empty fields."));
+      res.json({message: "Please fill empty fields."});
     }
     var queryString = "INSERT INTO client (name, hash_password, is_npo) "
     + "VALUES ('" + username + "', '" + hashed_password + "', " + is_npo + ")"
@@ -54,7 +43,7 @@ db.connect((err, res)=>{
       if(err){
         console.error("error", err.message);
       } else {
-        res.json(JSON.stringify(result))
+        res.json(result)
       }
     })
   })
@@ -65,7 +54,7 @@ db.connect((err, res)=>{
       if(err){
         console.error("error", err.message);
       } else {
-        res.json(JSON.stringify(result))
+        res.json(result))
       }
     })
   })
@@ -81,7 +70,7 @@ db.connect((err, res)=>{
       if(err){
         console.error("error", err.message);
       } else {
-        res.json(JSON.stringify(result))
+        res.json(result)
       }
     })
   })
@@ -92,7 +81,7 @@ db.connect((err, res)=>{
       if(err){
         console.error("error", err.message);
       } else {
-        res.json(JSON.stringify(result.rows[0]))
+        res.json(result.rows[0])
       }
     })
   })
