@@ -3,42 +3,42 @@ const config = require('../../config')
 const db = require('../../db')
 const jwt = require('jsonwebtoken');
 
-
 class User{
-	constructor(username, password, is_npo){
-		this.username = username;
+	constructor(name, password, is_npo){
+		this.name = name;
 		this.password = password;
-		this.is_npo = is_npo || false
+		this.email = email;
+		this.is_npo = is_npo
 	}
 
 	save(callback){
-		if (!this.username || !this.password){
-			callback(new Error('No Username or password provided'))
+		if (!this.name || !this.password){
+			callback(new Error('No Name or password provided'))
 		} else {
 			const hashed_password = ''
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
 				if (!hashErr){
-					const queryString = `INSERT INTO dareity_user (name, hashed_password, is_npo) VALUES ('${this.username}', '${hashed_password}', ${this.is_npo})`
+					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo) VALUES ('${this.username}', '${hashed_password}', '${this.email}', ${this.is_npo})`
 					db.query(queryString, callback)
 				} else {
 					callback(hashErr)
 				}
 			})
-			
-				
+
+
 		}
 	}
 }
 
-User.authenticate = function(username, password, callback){
-    db.query(`SELECT name, is_npo, hashed_password FROM dareity_user WHERE name = '${username}'`, 
+User.authenticate = function(name, password, callback){
+    db.query(`SELECT name, is_npo, password FROM dareity_user WHERE name = '${name}'`,
     function(err, result) {
       const user = result.rows[0]
       if (err) throw err;
         if (!user) {
           callback('Authentication failed. User not found.')
         } else {
-          bcrypt.compare(password, user.hashed_password, function(err, passwordValid){
+          bcrypt.compare(password, user.password, function(err, passwordValid){
             if (passwordValid == false) {
               callback('Authentication failed. Wrong password.');
             } else {

@@ -33,8 +33,8 @@ db.connect((err, res)=>{
   apiRoutes.post('/authenticate', usercontroller.authenticate);
 
   app.post('/api/fetch_user', function(req, res){
-    var username = req.body.dareity_user;
-    db.query("SELECT user_id, name, is_npo FROM dareity_user WHERE name = '" + username + "'", function(err, result){
+    var name = req.body.dareity_user;
+    db.query("SELECT user_id, name, email, is_npo FROM dareity_user WHERE name = '" + name + "'", function(err, result){
       if(err){
         console.error("error",err.message);
       } else {
@@ -43,9 +43,6 @@ db.connect((err, res)=>{
     })
   })
 
-
-
   app.listen(process.env.PORT || 3001);
   console.log('magic');
 })
-
