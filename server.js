@@ -1,12 +1,13 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var morgan = require('morgan');
-var config = require('./config');
-var jwt = require('jsonwebtoken');
-var User = require('./server/models/user');
-var usercontroller = require('./server/controllers/userController');
-var db = require('./db')
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const config = require('./config');
+const jwt = require('jsonwebtoken');
+const User = require('./server/models/user');
+const usercontroller = require('./server/controllers/userController');
+const db = require('./db')
+const { requireLogin } = require('./server/models/user')
 
 db.connect((err, res)=>{
   if(err) {
@@ -41,6 +42,8 @@ db.connect((err, res)=>{
       }
     })
   })
+
+
 
   app.listen(process.env.PORT || 3001);
   console.log('magic');
