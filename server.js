@@ -47,13 +47,13 @@ app.post('/api/fetch_user', function(req, res){
 app.post('/api/create_dare', function(req, res){
   const {dare_title, dare_description, npo_creator} = req.body;
   if(dare_title === undefined || dare_description === undefined || npo_creator === undefined){
-    res.json(JSON.stringify("Please fill empty fields."));
+    res.json(JSON.stringify("Please fill empty fields."))
   }
   var queryString = "INSERT INTO dare (dare_title, dare_description, npo_creator) "
     + "VALUES ('" + dare_title + "', '" + dare_description + "', " + npo_creator + ")"
 	pool.query(queryString, function(err, result){
     if(err){
-			console.error("error", err.message);
+			console.error("error", err.message)
 		} else {
 			res.json(JSON.stringify(result))
 		}
@@ -61,10 +61,11 @@ app.post('/api/create_dare', function(req, res){
 })
 
 app.post('/api/fetch_dare', function(req, res){
-  var id = req.body.id;
-	pool.query("SELECT id_dare, dare_title, dare_description, npo_creator, dare_expires, total_pledge_dollar_amount FROM dare WHERE id_dare = " + id, function(err, result){
+	var id = req.body.id;
+	var queryString = "SELECT id_dare, dare_title, dare_description, npo_creator, dare_expires, total_pledge_dollar_amount FROM dare WHERE id_dare = " + id
+	pool.query(queryString, function(err, result){
     if(err){
-			console.error("error", err.message);
+			console.error("error", err.message)
 		} else {
 			res.json(JSON.stringify(result.rows[0]))
 		}
