@@ -12,7 +12,7 @@ if(!client){
     if (err) throw err;
     console.log('Connecting to database')
     client = _client
-  );
+  });
 }
 
 module.exports = {
