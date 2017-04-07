@@ -9,12 +9,6 @@ const usercontroller = require('./server/controllers/userController');
 const db = require('./db')
 const { requireLogin } = require('./server/models/user')
 
-db.connect((err, res)=>{
-  if(err) {
-    throw new Error(err.message);
-  }
-})
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
