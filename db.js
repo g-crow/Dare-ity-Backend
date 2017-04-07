@@ -5,11 +5,10 @@ const config = require('./config')
 //and set a limit of maximum 10 idle clients
 
 let client;
-var pg = require('pg');
 
 pg.defaults.ssl = true;
 if(!client){
-  pg.connect(process.env.DATABASE_URL, function(err, _client) {
+  pg.connect(process.env.DATABASE_URL || config.db, function(err, _client) {
     if (err) throw err;
     console.log('Connecting to database')
     client = _client
