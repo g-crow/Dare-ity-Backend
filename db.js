@@ -3,7 +3,7 @@ const config = require('./config')
 //this initializes a connection pool
 //it will keep idle connections open for 30 seconds
 //and set a limit of maximum 10 idle clients
-const pool = new pg.Pool(config.db);
+const pool = new pg.Pool(process.env.DATABASE_URL || config.db);
 
 pool.on('error', function (err, client) {
   // if an error is encountered by a client while it sits idle in the pool
