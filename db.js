@@ -5,7 +5,7 @@ const config = require('./config')
 //and set a limit of maximum 10 idle clients
 
 console.log(process.env.DATABASE_URL)
-const pool = new pg.Pool(process.env.DATABASE_URL || config.db);
+const pool = new pg.Pool(process.env.DATABASE_URL);
 
 pool.on('error', function (err, client) {
   // if an error is encountered by a client while it sits idle in the pool
