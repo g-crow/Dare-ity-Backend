@@ -24,8 +24,6 @@ class User{
 					callback(hashErr)
 				}
 			})
-
-
 		}
 	}
 }

@@ -13,38 +13,36 @@ db.connect((err, res)=>{
   if(err) {
     throw new Error(err.message);
   }
+})
 
-  app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-  app.use(morgan('dev'));
+app.use(morgan('dev'));
 
+//API Routes
+var apiRoutes = express.Router();
 
-  //API Routes
-  var apiRoutes = express.Router();
+app.get('/', function(req, res) {
+  res.json({ message: 'Dare-ity api launched!' });
+});
 
-  app.get('/', function(req, res) {
-    res.json({ message: 'Dare-ity api launched!' });
-  });
+app.use('/api', apiRoutes);
 
-  app.use('/api', apiRoutes);
+//POST
+apiRoutes.post('/create_user', usercontroller.createuser);
+apiRoutes.post('/authenticate', usercontroller.authenticate);
 
-  //POST
-  apiRoutes.post('/create_user', usercontroller.createuser);
-  apiRoutes.post('/authenticate', usercontroller.authenticate);
-
-
-  app.post('/api/fetch_user', function(req, res){
-    var username = req.body.username;
-    pool.query("SELECT id, name, is_npo FROM user WHERE name = '" + username + "'", function(err, result){
-      if(err){
-        console.error("error", err.message);
-      } else {
-        res.json(result))
-      }
-    })
+app.post('/api/fetch_user', function(req, res){
+  var username = req.body.username;
+  pool.query("SELECT id, name, is_npo FROM user WHERE name = '" + username + "'", function(err, result){
+    if(err){
+      console.error("error", err.message);
+    } else {
+      res.json(result)
+    }
   })
-
+})
 
 app.post('/api/create_dare', function(req, res){
   const {dare_title, dare_description, npo_creator} = req.body;
@@ -61,7 +59,7 @@ app.post('/api/create_dare', function(req, res){
 			res.json(JSON.stringify(result))
 		}
   })
-
+})
 
 app.post('/api/fetch_dare', function(req, res){
 	var id = req.body.id;
@@ -72,8 +70,8 @@ app.post('/api/fetch_dare', function(req, res){
 		} else {
 			res.json(JSON.stringify(result.rows[0]))
 		}
-
   })
+})
 
 app.post('/api/create_client_dare', function(req, res){
   const {broadcaster_id, dare_id, npo_id} = req.body;
@@ -117,6 +115,5 @@ app.post('/api/delete_record', function(req, res){
   })
 })
 
-  app.listen(process.env.PORT || 3001);
-  console.log('magic');
-}
+app.listen(process.env.PORT || 3001);
+console.log('magic');

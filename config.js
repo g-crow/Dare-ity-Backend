@@ -3,8 +3,8 @@ module.exports = {
   'saltRounds': 10,
    db: {
     host: 'localhost',
-    user: 'rebeccaking',
-    password: 'XXXXX',
+    user: 'dare',
+    password: 'dare',
     database: 'dareity'
   }
 };
