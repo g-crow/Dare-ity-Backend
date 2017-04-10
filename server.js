@@ -20,6 +20,13 @@ const pg = require('pg')
 //it will keep idle connections open for 30 seconds
 //and set a limit of maximum 10 idle clients
 
+db.connect(function(err, result){
+  if(err) {
+    throw err
+  }
+  console.log('Connected to DB')
+})
+
 let client;
 
 pg.defaults.ssl = true;
