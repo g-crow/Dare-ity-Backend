@@ -1,5 +1,6 @@
 const pg = require('pg').native
 const parse = require('pg-connection-string').parse;
+const config = require ('./config')
 
 pg.defaults.ssl = true;
 
@@ -12,8 +13,8 @@ pg.defaults.ssl = true;
 //this initializes a connection pool
 //it will keep idle connections open for 30 seconds
 //and set a limit of maximum 10 idle clients
-console.log('Parsing away like a champ', parse(process.env.DATABASE_URL ))
-const pool = new pg.Pool(parse(process.env.DATABASE_URL)|| config.db);
+const connectionConfig = process.env.DATABASE_URL ? parse(process.env.DATABASE_URL) : config.db;
+const pool = new pg.Pool(connectionConfig);
 
 pool.on('error', function (err, client) {
   // if an error is encountered by a client while it sits idle in the pool
