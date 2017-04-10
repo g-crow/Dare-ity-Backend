@@ -53,8 +53,8 @@ apiRoutes.post('/create_user', usercontroller.createuser);
 apiRoutes.post('/authenticate', usercontroller.authenticate);
 
 app.post('/api/fetch_user', function(req, res){
-  var username = req.body.username;
-  db.query("SELECT id, name, is_npo FROM user WHERE name = '" + username + "'", function(err, result){
+  const name= req.body.name;
+  db.query("SELECT id, name, is_npo FROM user WHERE name = '" + name + "'", function(err, result){
     if(err){
       console.error("error", err.message);
     } else {
