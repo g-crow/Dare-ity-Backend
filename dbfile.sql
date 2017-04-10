@@ -155,7 +155,8 @@ CREATE TABLE pledge (
     dare_id integer NOT NULL,
     pledge_amount money NOT NULL,
     to_refund boolean DEFAULT false NOT NULL,
-    user_dare_id integer NOT NULL
+    user_dare_id integer NOT NULL,
+    pledger_id integer NOT NULL
 );
 
 
@@ -258,7 +259,7 @@ SELECT pg_catalog.setval('id_pledge_id_pledge_seq', 1, false);
 -- Data for Name: pledge; Type: TABLE DATA; Schema: public; Owner: dareity
 --
 
-COPY pledge (id, broadcaster_id, npo_id, dare_id, pledge_amount, to_refund, user_dare_id) FROM stdin;
+COPY pledge (id, broadcaster_id, npo_id, dare_id, pledge_amount, to_refund, user_dare_id, pledger_id) FROM stdin;
 \.
 
 

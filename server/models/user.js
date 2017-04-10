@@ -4,7 +4,7 @@ const db = require('../../db')
 const jwt = require('jsonwebtoken');
 
 class User{
-	constructor(name, password, is_npo){
+	constructor(name, password, email, is_npo){
 		this.name = name;
 		this.password = password;
 		this.email = email;
