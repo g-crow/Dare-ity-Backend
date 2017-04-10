@@ -8,7 +8,7 @@ const createuser = function(req, res){
     is_npo
   } = req.body;
   var user = new User(name, password, email, is_npo)
-  user.save((err, user)=> err ? res.status(500).json(err) : res.json(user))
+  user.save((err, user)=> err ? res.status(500).json(err) : res.json(user.rows[0]))
 }
 
 const authenticate = function(req, res) {
