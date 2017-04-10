@@ -14,7 +14,6 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 const pg = require('pg')
-const config = require('./config')
 //this initializes a connection pool
 //it will keep idle connections open for 30 seconds
 //and set a limit of maximum 10 idle clients
