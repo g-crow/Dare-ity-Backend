@@ -15,7 +15,6 @@ app.use(morgan('dev'));
 
 const db = require('./db')
 
-const pg = require('pg')
 //this initializes a connection db
 //it will keep idle connections open for 30 seconds
 //and set a limit of maximum 10 idle clients
@@ -29,12 +28,12 @@ db.connect(function(err, result){
 
 let client;
 
-pg.defaults.ssl = true;
-pg.connect(process.env.DATABASE_URL || config.db, function(err, _client) {
-  if (err) throw err;
-    console.log('Connecting to database')
-    client = _client
-});
+
+// pg.connect(process.env.DATABASE_URL || config.db, function(err, _client) {
+//   if (err) throw err;
+//     console.log('Connecting to database')
+//     client = _client
+// });
 
 app.use((req, res, next) => { 
   req.query = client.query;

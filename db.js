@@ -1,4 +1,5 @@
-const pg = require('pg').native
+const pg = require('pg')
+pg.defaults.ssl = true;
 
 // create a config to configure both pooling behavior
 // and client options
