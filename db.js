@@ -15,6 +15,8 @@ if(!client){
   });
 }
 
+const query = () => client.query.apply(client, arguments)
+
 module.exports = {
-  query : client.query
+  query 
 }

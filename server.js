@@ -6,13 +6,41 @@ const config = require('./config');
 const jwt = require('jsonwebtoken');
 const User = require('./server/models/user');
 const usercontroller = require('./server/controllers/userController');
-const db = require('./db')
 const { requireLogin } = require('./server/models/user')
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(morgan('dev'));
+
+const pg = require('pg')
+const config = require('./config')
+//this initializes a connection pool
+//it will keep idle connections open for 30 seconds
+//and set a limit of maximum 10 idle clients
+
+let client;
+
+pg.defaults.ssl = true;
+pg.connect(process.env.DATABASE_URL || config.db, function(err, _client) {
+  if (err) throw err;
+    console.log('Connecting to database')
+    client = _client
+});
+
+app.use((req, res, next) => { 
+  req.query = client.query;
+  next();
+})
+
+
+
+
+module.exports = {
+  query : client.query
+}
+
+
 
 //API Routes
 var apiRoutes = express.Router();
