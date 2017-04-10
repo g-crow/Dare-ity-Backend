@@ -1,0 +1,18 @@
+I will list URLs of the Postgres documentation pages needed for database
+creation and access along with possible gotchas I encountered along the way.
+
+Creating a Database:
+
+https://www.postgresql.org/docs/9.6/static/tutorial-createdb.html
+
+	You may get the error: createdb: could not connect to database postgres: FATAL:  role "joe" does not exist
+	You will need to create a Postgres "role," which is a user account. To do this,
+	first login in bash as the default Postgres user. Commands:
+	
+	1. su
+	2. su - postgres
+	3. psql
+	
+	You are now logged-in to the Postgress command-line tool. Next:
+	
+	1. CREATE 
