@@ -26,24 +26,6 @@ db.connect(function(err, result){
   console.log('Connected to DB')
 })
 
-let client;
-
-
-// pg.connect(process.env.DATABASE_URL || config.db, function(err, _client) {
-//   if (err) throw err;
-//     console.log('Connecting to database')
-//     client = _client
-// });
-
-app.use((req, res, next) => { 
-  req.query = client.query;
-  next();
-})
-
-
-
-
-
 
 //API Routes
 var apiRoutes = express.Router();
