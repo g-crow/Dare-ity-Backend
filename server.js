@@ -35,10 +35,6 @@ app.use((req, res, next) => {
 
 
 
-module.exports = {
-  query : client.query
-}
-
 
 
 //API Routes
