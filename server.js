@@ -40,16 +40,7 @@ app.use('/api', apiRoutes);
 apiRoutes.post('/create_user', usercontroller.createuser);
 apiRoutes.post('/authenticate', usercontroller.authenticate);
 
-app.post('/api/fetch_user', function(req, res){
-  const name= req.body.name;
-  db.query("SELECT id, name, is_npo FROM user WHERE name = '" + name + "'", function(err, result){
-    if(err){
-      console.error("error", err.message);
-    } else {
-      res.json(result)
-    }
-  })
-})
+apiRoutes.post('/fetch_user', usercontroller.fetchUser); 
 
 apiRoutes.post('/update_user', function(req, res) {
   let columns = ''
