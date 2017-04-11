@@ -85,4 +85,19 @@ User.fetchUser = function(query, callback) {
   })
 };
 
+User.updateUser = function(query, id, callback) {
+  let columns = ''
+  if (query.is_npo) columns += `is_npo = ${query.is_npo}, `
+  if (query.email) columns += `email = '${query.email}', `
+  columns = columns.replace(/, $/, '')
+  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${id}`
+  db.query(queryString, function(err, result) {
+    if (err) {
+      callback('Sorry, please try again')
+    } else {
+      callback(null, 'User info updated')
+    }
+  })
+}
+
 module.exports = User

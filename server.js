@@ -42,21 +42,7 @@ apiRoutes.post('/authenticate', usercontroller.authenticate);
 
 apiRoutes.post('/fetch_user', usercontroller.fetchUser); 
 
-apiRoutes.post('/update_user', function(req, res) {
-  let columns = ''
-  if (req.body.is_npo) columns += `is_npo = ${req.body.is_npo}, `
-  if (req.body.email) columns += `email = '${req.body.email}', `
-  columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${req.body.id}`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
+apiRoutes.post('/update_user', usercontroller.updateUser);
 
 // dare routes
 apiRoutes.post('/create_dare', function(req, res) {
