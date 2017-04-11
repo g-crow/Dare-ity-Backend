@@ -7,7 +7,6 @@ const jwt = require('jsonwebtoken');
 const User = require('./server/models/user');
 const usercontroller = require('./server/controllers/userController');
 const db = require('./db')
-const { requireLogin } = require('./server/models/user')
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -15,7 +14,6 @@ app.use(bodyParser.json());
 
 app.use(morgan('dev'));
 
-const db = require('./db')
 
 //this initializes a connection db
 //it will keep idle connections open for 30 seconds
@@ -56,11 +54,20 @@ app.post('/api/fetch_user', function(req, res){
 
 apiRoutes.post('/update_user', function(req, res) {
   let columns = ''
-  if (req.body.is_npo) columns += `is_npo = ${req.body.is_npo}, `
-  if (req.body.email) columns += `email = '${req.body.email}', `
+  let sqlVars = 1;
+  const sqlArgs = []
+  if (req.body.is_npo) {
+    sqlArgs.push(req.body.is_npo)
+    columns += 'is_npo = $' + sqlVars + ', '
+    sqlVars += 1
+  }
+  if (req.body.email) {
+    sqlArgs.push(req.body.email)
+    columns += `email = '$${sqlVars++}', `
+  }
   columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${req.body.id}`
-  db.query(queryString, function(err, result) {
+  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = $${sqlVars}`
+  db.query(queryString, sqlArgs.concat(req.body.id), function(err, result) {
     if (err) {
       console.error('error', err.message)
       res.json(err.message)
@@ -71,27 +78,30 @@ apiRoutes.post('/update_user', function(req, res) {
 })
 
 // dare routes
-apiRoutes.post('/create_dare', function(req, res) {
-  const {dare_title, dare_description, npo_creator} = req.body
-  if (dare_title === undefined || dare_description === undefined || npo_creator === undefined) {
+apiRoutes.post('/create_dare', User.requireLogin, function(req, res) {
+  const userId =  req.decoded.id
+  const {dare_title, dare_description} = req.body
+  if (dare_title === undefined || dare_description === undefined) {
     res.json('Please set all required parameters.')
     res.end()
   }
-  const queryString = `INSERT INTO dare (title, description, npo_creator, expiration) VALUES ('${dare_title}', '${dare_description}', npo_creator, CURRENT_DATE + INTERVAL 30 DAY)`
-  db.query(queryString, function(err, result) {
+  const queryString = `INSERT INTO dare (title, description, npo_creator, expiration) 
+  VALUES ($1, $2, $3, CURRENT_DATE + INTERVAL '30 days') RETURNING *`
+  db.query(queryString, [dare_title,dare_description, userId], function(err, result) {
     if (err) {
       console.error('error', err.message)
       res.json(err.message)
     } else {
-      res.json(result)
+      res.json(result.rows[0])
     }
   })
 })
 
 apiRoutes.post('/fetch_dare', function(req, res) {
   const id = req.body.id
-  const queryString = `SELECT id, title, description, npo_creator, expiration, total_pledge_amount FROM dare WHERE id = ${id}`
-  db.query(queryString, function(err, result) {
+  const queryString = `SELECT id, title, description, npo_creator, expiration, 
+  total_pledge_amount FROM dare WHERE id = $1`
+  db.query(queryString, [id], function(err, result) {
     if (err) {
       console.error('error', err.message)
       res.json(err.message)
@@ -102,22 +112,6 @@ apiRoutes.post('/fetch_dare', function(req, res) {
 })
 
 
-app.post('/api/create_dare', function(req, res){
-  const {dare_title, dare_description, npo_creator} = req.body;
-  if(dare_title === undefined || dare_description === undefined || npo_creator === undefined){
-    res.json(JSON.stringify("Please fill empty fields."))
-    res.end()
-  }
-  var queryString = "INSERT INTO dare (title, description, npo_creator) "
-    + "VALUES ('" + dare_title + "', '" + dare_description + "', " + npo_creator + ")"
-	pool.query(queryString, function(err, result){
-    if(err){
-			console.error("error", err.message)
-		} else {
-			res.json(JSON.stringify(result))
-		}
-  })
-})
 
 apiRoutes.post('/update_dare', function(req, res) {
   let columns = ''
@@ -141,6 +135,7 @@ apiRoutes.post('/update_dare', function(req, res) {
 
 // user_dare routes
 apiRoutes.post('/create_user_dare', function(req, res) {
+  console.log('decoded', req.decoded)
   const {broadcaster_id, dare_id, npo_id} = req.body
   if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined) {
     res.json('Please set all required parameters.')
@@ -287,14 +282,14 @@ app.post('/api/fetch_user_dare', function(req, res){
 })
 
 // one delete route for all DB records - table name, id column name, and record id must be provided
-app.post('/api/delete_record', function(req, res){
-	const {table_name, id_var, id} = req.body;
-	var queryString = "DELETE FROM " + table_name + " WHERE " + id_var + " = " + id
-	pool.query(queryString, function(err, result){
+app.post('/api/delete_record', User.requireLogin, function(req, res){
+	const {table_name, id} = req.body;
+	var queryString = "DELETE FROM " + table_name + " WHERE id = " + id
+	db.query(queryString, function(err, result){
     if(err){
 			console.error("error", err.message)
 		} else {
-			res.json(result + "This Means Success")
+			res.json(result)
 		}
   })
 })

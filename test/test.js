@@ -7,24 +7,26 @@ const userController = require('../server/controllers/userController')
 chai.use(chaiHttp);
 
 var should = chai.should();
+var userId;
+var uniqueName = 'smeary' + Date.now()
+var uniqueDare = 'plunge' + Date.now()
 
 describe('POST /api/create_user', function() {
 	it('should return NPO user object', function(done){
 		chai.request(server)
 		.post('/api/create_user')
-     	.send({'name': 'bob', 'password': 'abc', 'email': "bob.abc@gmail.com", 'is_npo': true})
-     	// console.log(use);
+     	.send({'name': uniqueName, 'password': 'abc', 'email': "bob.abc@gmail.com", 'is_npo': true})
      	.end(function(err,res){
-     	console.log(res.body)
          res.body.should.be.a('object');
          res.body.should.have.property('name');
          res.body.should.have.property('password');
          res.body.should.have.property('email');
          res.body.should.have.property('is_npo');
-         res.body.name.should.equal('bob');
+         res.body.name.should.equal(uniqueName);
          //res.body.password.should.equal(hashed_password);
          res.body.email.should.equal('bob.abc@gmail.com');
          res.body.is_npo.should.equal(true);
+         userId = res.body.id;
          done();
      	})
     });
@@ -34,7 +36,7 @@ describe('POST /api/authenticate', function() {
 	it('should return token', function(done){
 		chai.request(server)
 		.post('/api/authenticate')
-		.send({'name': 'bob', 'password': 'abc'})
+		.send({'name': uniqueName, 'password': 'abc'})
 		.end(function(err,res){
 			res.body.should.be.a('object');
 			res.body.should.have.property('success');
@@ -47,42 +49,68 @@ describe('POST /api/authenticate', function() {
 	});
 });
 
-// requireLogin = function(server, callback){
-//   chai.request(server)
-//       .post('/login/url') 
-//       .send({username: "Ron", password: "blueberry"})
-//       .end((err, res) => {
-//       callback(null, res.body.token)
-//   })
-// }
+const getTokenForTest = function(server, callback){
+  chai.request(server)
+      .post('/api/authenticate') 
+	  .send({'name': uniqueName, 'password': "abc"})
+      .end((err, res) => {
+      	callback(null, JSON.parse(res.res.text).token)
+  	})
+}
 
 describe('POST /api/create_dare', function() {
- it('should return dare object', function(done) {
-     requireLogin(server, (err, token) =>{
+ 	it('should return dare object', function(done) {
+ 		getTokenForTest(server, (err, token)=>{
          chai.request(server) 
          .post('/api/create_dare')
-         .send({'title': 'face plunge', token, 'description': "interpret as you'd like"})
+         .send({'npo_creator': userId, 'dare_title': uniqueDare, 'token': token, 'dare_description': "interpret as you'd like"})
          .end(function(err,res){
-             console.log('before object test');
              res.body.should.be.a('object');
-             console.log('before dare_title prop');
              res.body.should.have.property('title');
              res.body.should.have.property('description');
-             res.body.title.should.equal('face plunge');
+             res.body.title.should.equal(uniqueDare);
              res.body.description.should.equal("interpret as you'd like");
              done();
          })
-     }); 
- });
+ 	    });
+ 	})
+});
 
-//  it('blank fields should return message', function() {
-//      chai.request(server) 
-//      .post('/api/create_dare')
-//      .send({'title': undefined, 'description': undefineds})
-//      .end(function(err,res){
-//          res.body.should.be.json;
-//          res.body.json.should.equal(JSON.stringify("Please fill empty fields"));
-//          done();
-//      })
+
+
+describe('POST /api/create_dare', function() {
+	 it('blank fields should return message', function() {
+	 	getTokenForTest(server, (err, token)=>{
+		     chai.request(server) 
+		     .post('/api/create_dare')
+		     .send({'dare_title': undefined, 'dare_description': undefined})
+		     .end(function(err,res){
+		         res.body.should.be.a('object');
+		         res.body.json.should.equal(JSON.stringify("Please set all required parameters."));
+		         done();
+		     })
+	 	});
+	 })
+});
+
+
+//UNFINISHED TEST
+
+// describe('POST /api/delete_record', function() {
+//  it('should delete record', function(done) {
+//      requireLogin(server, (err, token) =>{
+//          chai.request(server) 
+//          .post('/api/delete_record')
+//          .send({'id': 11, 'token': token, 'table_name': "dare"})
+//          .end(function(err,res){
+//          	 console.log('response', res.res.text)
+//              res.body.should.be.a('object');
+//              res.body.should.have.property('command');
+//              res.body.should.have.property('rowCount');
+//              res.body.command.should.equal('DELETE');
+//              res.body.rowCount.should.equal(1);
+//              done();
+//          })
+//      }); 
 //  });
 // });
