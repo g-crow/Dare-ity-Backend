@@ -39,43 +39,8 @@ app.use('/api', apiRoutes);
 //POST
 apiRoutes.post('/create_user', usercontroller.createuser);
 apiRoutes.post('/authenticate', usercontroller.authenticate);
-
-app.post('/api/fetch_user', function(req, res){
-  const name = req.body.name;
-  db.query("SELECT id, name, is_npo FROM user WHERE name = '" + name + "'", function(err, result){
-
-    if(err){
-      console.error("error", err.message);
-    } else {
-      res.json(result)
-    }
-  })
-})
-
-apiRoutes.post('/update_user', function(req, res) {
-  let columns = ''
-  let sqlVars = 1;
-  const sqlArgs = []
-  if (req.body.is_npo) {
-    sqlArgs.push(req.body.is_npo)
-    columns += 'is_npo = $' + sqlVars + ', '
-    sqlVars += 1
-  }
-  if (req.body.email) {
-    sqlArgs.push(req.body.email)
-    columns += `email = '$${sqlVars++}', `
-  }
-  columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = $${sqlVars}`
-  db.query(queryString, sqlArgs.concat(req.body.id), function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
+apiRoutes.post('/fetch_user', usercontroller.fetchUser); 
+apiRoutes.post('/update_user', usercontroller.updateUser);
 
 // dare routes
 apiRoutes.post('/create_dare', User.requireLogin, function(req, res) {

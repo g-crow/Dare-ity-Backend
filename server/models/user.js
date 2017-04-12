@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt')
-const config = require('../../config')
-const db = require('../../db')
+const bcrypt = require('bcrypt');
+const config = require('../../config');
+const db = require('../../db');
 const jwt = require('jsonwebtoken');
 
 class User{
@@ -72,5 +72,33 @@ User.requireLogin = function(req, res, next) {
     });
   }
 };
+
+User.fetchUser = function(query, callback) {
+  db.query('SELECT name, email FROM dareity_user WHERE name=$1 OR email=$1', [query], function(err, result){
+    const user = result.rows[0]
+    if (err){
+      callback(err.message)
+    } else if (user) {
+      callback(null, user)
+    } else {
+      callback('No user found.')
+    }
+  })
+};
+
+User.updateUser = function(query, id, callback) {
+  let columns = ''
+  if (query.is_npo) columns += `is_npo = ${query.is_npo}, `
+  if (query.email) columns += `email = '${query.email}', `
+  columns = columns.replace(/, $/, '')
+  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${id}`
+  db.query(queryString, function(err, result) {
+    if (err) {
+      callback('Sorry, please try again')
+    } else {
+      callback(null, 'User info updated')
+    }
+  })
+}
 
 module.exports = User
