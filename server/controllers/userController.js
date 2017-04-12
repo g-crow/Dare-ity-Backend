@@ -26,4 +26,34 @@ const authenticate = function(req, res) {
   })
 }
 
-module.exports = { createuser, authenticate}
+const fetchUser = function(req, res) {
+  const { query } = req.body;
+  User.fetchUser(query, (err, result) => {
+    console.log('Result', result)
+    if (err){
+      res.status(400).json({success: false, message: err})
+    } else {
+      res.json({
+                success: true,
+                result: result
+              });
+    }
+  })
+}
+
+const updateUser = function(req, res) {
+  const id = req.body.id;
+  const query = req.body;
+  User.updateUser(query, id, (err, result) => {
+    if (err) {
+      res.status(400).json({success: false, message: err})
+    } else {
+      res.json({
+                success: true,
+                result: result
+              });
+    }
+  })
+}
+
+module.exports = { createuser, authenticate, fetchUser, updateUser}
