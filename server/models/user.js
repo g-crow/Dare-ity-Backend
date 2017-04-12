@@ -92,6 +92,7 @@ User.updateUser = function(query, id, callback) {
   columns = columns.replace(/, $/, '')
   const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${id}`
   db.query(queryString, function(err, result) {
+    console.log('result', result);
     if (err) {
       callback('Sorry, please try again')
     } else {

@@ -5,8 +5,10 @@ const morgan = require('morgan');
 const config = require('./config');
 const jwt = require('jsonwebtoken');
 const User = require('./server/models/user');
+const Dare = require('./server/models/dare');
 const usercontroller = require('./server/controllers/userController');
-const { requireLogin } = require('./server/models/user')
+const darecontroller = require('./server/controllers/dareController');
+const { requireLogin } = require('./server/models/user');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -45,22 +47,7 @@ apiRoutes.post('/fetch_user', usercontroller.fetchUser);
 apiRoutes.post('/update_user', usercontroller.updateUser);
 
 // dare routes
-apiRoutes.post('/create_dare', function(req, res) {
-  const {dare_title, dare_description, npo_creator} = req.body
-  if (dare_title === undefined || dare_description === undefined || npo_creator === undefined) {
-    res.json('Please set all required parameters.')
-    res.end()
-  }
-  const queryString = `INSERT INTO dare (title, description, npo_creator, expiration) VALUES ('${dare_title}', '${dare_description}', npo_creator, CURRENT_DATE + INTERVAL 30 DAY)`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
+apiRoutes.post('/create_dare', darecontroller.createDare);
 
 apiRoutes.post('/fetch_dare', function(req, res) {
   const id = req.body.id

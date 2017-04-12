@@ -2,11 +2,11 @@ const User = require('../models/user');
 
 const createuser = function(req, res){
   const {
-    name,
-    password,
-    email,
-    is_npo
-  } = req.body;
+          name,
+          password,
+          email,
+          is_npo
+        } = req.body;
   var user = new User(name, password, email, is_npo)
   user.save((err, user)=> err ? res.status(500).json(err) : res.json(user))
 }
