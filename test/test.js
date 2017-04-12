@@ -77,7 +77,6 @@ describe('POST /api/create_dare', function() {
 });
 
 
-
 describe('POST /api/create_dare', function() {
 	 it('blank fields should return message', function() {
 	 	getTokenForTest(server, (err, token)=>{
@@ -93,24 +92,3 @@ describe('POST /api/create_dare', function() {
 	 })
 });
 
-
-//UNFINISHED TEST
-
-// describe('POST /api/delete_record', function() {
-//  it('should delete record', function(done) {
-//      requireLogin(server, (err, token) =>{
-//          chai.request(server) 
-//          .post('/api/delete_record')
-//          .send({'id': 11, 'token': token, 'table_name': "dare"})
-//          .end(function(err,res){
-//          	 console.log('response', res.res.text)
-//              res.body.should.be.a('object');
-//              res.body.should.have.property('command');
-//              res.body.should.have.property('rowCount');
-//              res.body.command.should.equal('DELETE');
-//              res.body.rowCount.should.equal(1);
-//              done();
-//          })
-//      }); 
-//  });
-// });

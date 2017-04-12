@@ -97,6 +97,7 @@ apiRoutes.post('/create_dare', User.requireLogin, function(req, res) {
   })
 })
 
+
 apiRoutes.post('/fetch_dare', function(req, res) {
   const id = req.body.id
   const queryString = `SELECT id, title, description, npo_creator, expiration, 
@@ -283,17 +284,16 @@ app.post('/api/fetch_user_dare', function(req, res){
 
 // one delete route for all DB records - table name, id column name, and record id must be provided
 app.post('/api/delete_record', User.requireLogin, function(req, res){
-	const {table_name, id} = req.body;
-	var queryString = "DELETE FROM " + table_name + " WHERE id = " + id
-	db.query(queryString, function(err, result){
+  const {table_name, id} = req.body;
+  var queryString = `DELETE FROM ${table_name} WHERE id = ${id} RETURNING *`
+  db.query(queryString, function(err, result){
     if(err){
-			console.error("error", err.message)
-		} else {
-			res.json(result)
-		}
+      console.error("error", err.message)
+    } else {
+      res.json(result.rows[0])
+    }
   })
 })
-
 
 var server = app.listen(process.env.PORT || 3001);
 module.exports = server;
