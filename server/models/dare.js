@@ -27,8 +27,8 @@ class Dare{
 }
 
 Dare.fetchDare = function(query, callback) {
-  const queryString = 'SELECT title, description, npo_creator, expiration FROM dare WHERE title=$1 OR description=$1 OR npo_creator=$1 OR expiration=$1', [query],
-  db.query(queryString, function(err, result) {
+  const queryString = 'SELECT title, description, npo_creator, expiration FROM dare WHERE title=$1 OR description=$1 OR npo_creator=$1 OR expiration=$1'
+  db.query(queryString, [query], function(err, result) {
 		const dare = result.rows[0]
     if (err) {
       callback(err.message)
@@ -38,6 +38,6 @@ Dare.fetchDare = function(query, callback) {
 			callback('No dare found.')
 		}
   })
-})
+}
 
 module.exports = Dare;

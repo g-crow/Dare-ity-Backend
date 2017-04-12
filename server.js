@@ -182,7 +182,7 @@ apiRoutes.post('/delete_record', function(req, res) {
       res.json(result)
     }
   })
-}
+});
 
 app.listen(process.env.PORT || 3001);
 console.log('magic');
