@@ -1,7 +1,5 @@
 const db = require('../../db');
 
-
-
 class Dare{
 	constructor(title, description, npo_creator, expiration, pledge_threshold){
 		this.title = title;
@@ -16,7 +14,6 @@ class Dare{
 			callback(new Error('Please make sure title, description, expiration, and the pledge threshold are entered.'))
 		} else {
 			const queryString = `INSERT INTO dare (title, description, npo_creator, expiration, pledge_threshold) VALUES ('${this.title}', '${this.description}', ${this.npo_creator}, '${this.expiration}', ${this.pledge_threshold})`
-			console.log('The query', queryString)
 			db.query(queryString, function(err, result) {
 				console.log(err);
 			    if (err) {
@@ -28,5 +25,19 @@ class Dare{
 		}
 	}
 }
+
+Dare.fetchDare = function(query, callback) {
+  const queryString = 'SELECT title, description, npo_creator, expiration FROM dare WHERE title=$1 OR description=$1 OR npo_creator=$1 OR expiration=$1', [query],
+  db.query(queryString, function(err, result) {
+		const dare = result.rows[0]
+    if (err) {
+      callback(err.message)
+    } else if (dare) {
+      callback(null, dare)
+    } else {
+			callback('No dare found.')
+		}
+  })
+})
 
 module.exports = Dare;
