@@ -79,7 +79,7 @@ describe('POST /api/create_dare', function() {
 
 describe('POST /api/create_dare', function() {
 	 it('blank fields should return message', function() {
-	 	getTokenForTest(server, (err, token)=>{
+	 	getTokenForTest(server, (err, token) => {
 		     chai.request(server) 
 		     .post('/api/create_dare')
 		     .send({'dare_title': undefined, 'dare_description': undefined})
