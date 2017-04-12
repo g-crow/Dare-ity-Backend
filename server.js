@@ -5,10 +5,11 @@ const morgan = require('morgan');
 const config = require('./config');
 const jwt = require('jsonwebtoken');
 const User = require('./server/models/user');
+const Dare = require('./server/models/dare');
 const usercontroller = require('./server/controllers/userController');
 const db = require('./db')
-
-
+const darecontroller = require('./server/controllers/dareController');
+const { requireLogin } = require('./server/models/user');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -43,61 +44,11 @@ apiRoutes.post('/fetch_user', usercontroller.fetchUser);
 apiRoutes.post('/update_user', usercontroller.updateUser);
 
 // dare routes
-apiRoutes.post('/create_dare', User.requireLogin, function(req, res) {
-  const userId =  req.decoded.id
-  const {dare_title, dare_description} = req.body
-  if (dare_title === undefined || dare_description === undefined) {
-    res.json('Please set all required parameters.')
-    res.end()
-  }
-  const queryString = `INSERT INTO dare (title, description, npo_creator, expiration) 
-  VALUES ($1, $2, $3, CURRENT_DATE + INTERVAL '30 days') RETURNING *`
-  db.query(queryString, [dare_title,dare_description, userId], function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result.rows[0])
-    }
-  })
-})
 
+apiRoutes.post('/create_dare', darecontroller.createDare);
+apiRoutes.post('/fetch_dare', darecontroller.fetchDare);
+apiRoutes.post('/update_dare', darecontroller.updateDare);
 
-apiRoutes.post('/fetch_dare', function(req, res) {
-  const id = req.body.id
-  const queryString = `SELECT id, title, description, npo_creator, expiration, 
-  total_pledge_amount FROM dare WHERE id = $1`
-  db.query(queryString, [id], function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
-
-
-
-apiRoutes.post('/update_dare', function(req, res) {
-  let columns = ''
-  if (req.body.title) columns += `title = '${req.body.title}', `
-  if (req.body.description) columns += `description = '${req.body.description}', `
-  if (req.body.npo_creator) columns += `npo_creator = ${req.body.npo_creator}, `
-  if (req.body.expiration) columns += `expiration = '${req.body.expiration}', `
-  if (req.body.total_pledge_amount) columns += `total_pledge_amount = ${req.body.total_pledge_amount}, `
-  if (req.body.pledge_threshold) columns += `pledge_threshold = ${req.body.pledge_threshold}, `
-  columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE dare SET ${columns} WHERE id = ${req.body.id}`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
 
 // user_dare routes
 apiRoutes.post('/create_user_dare', function(req, res) {

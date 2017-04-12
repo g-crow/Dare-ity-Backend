@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const config = require('../../config');
 const db = require('../../db');
 const jwt = require('jsonwebtoken');
-
+const _ = require('lodash');
 class User{
 	constructor(name, password, email, is_npo){
 		this.name = name;
@@ -75,7 +75,7 @@ User.requireLogin = function(req, res, next) {
 
 User.fetchUser = function(query, callback) {
   db.query('SELECT name, email FROM dareity_user WHERE name=$1 OR email=$1', [query], function(err, result){
-    const user = result.rows[0]
+    const user = _.get(result, 'rows[0]')
     if (err){
       callback(err.message)
     } else if (user) {
@@ -93,6 +93,7 @@ User.updateUser = function(query, id, callback) {
   columns = columns.replace(/, $/, '')
   const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${id}`
   db.query(queryString, function(err, result) {
+    console.log('result', result);
     if (err) {
       callback('Sorry, please try again')
     } else {
@@ -100,5 +101,7 @@ User.updateUser = function(query, id, callback) {
     }
   })
 }
+
+
 
 module.exports = User
