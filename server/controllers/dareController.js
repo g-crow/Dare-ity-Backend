@@ -2,10 +2,10 @@ const Dare = require ('../models/dare');
 
 const createDare = function(req, res){
 	const {
-			title, 
-			description, 
+			title,
+			description,
 			npo_creator,
-			expiration, 
+			expiration,
 			pledge_threshold
 		  } = req.body;
 	var dare = new Dare(title, description, npo_creator, expiration, pledge_threshold)

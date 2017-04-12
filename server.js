@@ -37,7 +37,7 @@ app.get('/', function(req, res) {
 
 app.use('/api', apiRoutes);
 
-//POST
+//USER ROUTES
 apiRoutes.post('/create_user', usercontroller.createuser);
 apiRoutes.post('/authenticate', usercontroller.authenticate);
 apiRoutes.post('/fetch_user', usercontroller.fetchUser); 
@@ -48,6 +48,7 @@ apiRoutes.post('/update_user', usercontroller.updateUser);
 apiRoutes.post('/create_dare', darecontroller.createDare);
 apiRoutes.post('/fetch_dare', darecontroller.fetchDare);
 apiRoutes.post('/update_dare', darecontroller.updateDare);
+
 
 
 // user_dare routes
@@ -155,20 +156,6 @@ apiRoutes.post('/update_pledge', function(req, res) {
 
 
 
-
-
-app.post('/api/fetch_dare', function(req, res){
-	var id = req.body.id;
-	var queryString = "SELECT id, title, description, npo_creator, expiration, total_pledge_amount FROM dare WHERE id = " + id
-	pool.query(queryString, function(err, result){
-    if(err){
-			console.error("error", err.message)
-		} else {
-			res.json(JSON.stringify(result.rows[0]))
-		}
-  })
-})
-
 app.post('/api/create_client_dare', function(req, res){
   const {broadcaster_id, dare_id, npo_id} = req.body;
   if(broadcaster_id === undefined || dare_id === undefined || npo_id === undefined){
@@ -214,7 +201,4 @@ app.post('/api/delete_record', User.requireLogin, function(req, res){
 var server = app.listen(process.env.PORT || 3001);
 module.exports = server;
 console.log('magic');
-
-
-
 

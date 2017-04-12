@@ -1,8 +1,6 @@
 const db = require('../../db');
 const _ = require('lodash');
 
-
-
 class Dare{
 	constructor(title, description, npo_creator, expiration, pledge_threshold){
 		this.title = title;
@@ -17,7 +15,6 @@ class Dare{
 			callback(new Error('Please make sure title, description, expiration, and the pledge threshold are entered.'))
 		} else {
 			const queryString = `INSERT INTO dare (title, description, npo_creator, expiration, pledge_threshold) VALUES ('${this.title}', '${this.description}', ${this.npo_creator}, '${this.expiration}', ${this.pledge_threshold})`
-			console.log('The query', queryString)
 			db.query(queryString, function(err, result) {
 				console.log(err);
 			    if (err) {
