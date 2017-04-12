@@ -23,7 +23,6 @@ describe('POST /api/create_user', function() {
          res.body.should.have.property('email');
          res.body.should.have.property('is_npo');
          res.body.name.should.equal(uniqueName);
-         //res.body.password.should.equal(hashed_password);
          res.body.email.should.equal('bob.abc@gmail.com');
          res.body.is_npo.should.equal(true);
          userId = res.body.id;
