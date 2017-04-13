@@ -2,11 +2,11 @@ const User = require('../models/user');
 
 const createuser = function(req, res){
   const {
-    name,
-    password,
-    email,
-    is_npo
-  } = req.body;
+          name,
+          password,
+          email,
+          is_npo
+        } = req.body;
   var user = new User(name, password, email, is_npo)
   user.save((err, user)=> err ? res.status(500).json(err) : res.json(user.rows[0]))
 }
@@ -29,7 +29,6 @@ const authenticate = function(req, res) {
 const fetchUser = function(req, res) {
   const { query } = req.body;
   User.fetchUser(query, (err, result) => {
-    console.log('Result', result)
     if (err){
       res.status(400).json({success: false, message: err})
     } else {
