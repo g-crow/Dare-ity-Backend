@@ -11,6 +11,7 @@ var userId;
 var uniqueName = 'smeary' + Date.now()
 var uniqueDare = 'plunge' + Date.now()
 var createUserId;
+var dareId;
 
 describe('POST /api/create_user', function() {
 	it('should return NPO user object', function(done){
@@ -70,12 +71,13 @@ describe('POST /api/create_dare', function() {
              res.body.should.have.property('description');
              res.body.title.should.equal(uniqueDare);
              res.body.description.should.equal("interpret as you'd like");
+						 dareId = res.body.id
+						 console.log(res.body)
              done();
          })
  	    });
  	})
 });
-
 
 const createUserForDelete = function(server, callback){
   chai.request(server)
@@ -87,19 +89,46 @@ const createUserForDelete = function(server, callback){
   	})
 }
 
-describe('POST /api/create_dare', function() {
-	 it('blank fields should return message', function(done) {
-		 createUserForDelete(server, (err)=> {
-		 	getTokenForTest(server, (err, token) => {
-		     chai.request(server)
-		     .post('/api/create_dare')
-		     .send({'npo_creator': userId, 'title': "", 'token': token, 'description': ""})
-		     .end(function(err,res){
-					 	 console.log(res.body, " working")
-		         res.body.should.equal("Please set all required parameters.");
-		         done();
-		     })
-	 		 })
-	 		})
-		})
-	});
+describe('POST /api/delete_record', function() {
+ 	it('should delete a record from the dareity_user table', function(done) {
+		createUserForDelete(server, (err)=> {
+	 		getTokenForTest(server, (err, token)=>{
+	         chai.request(server)
+	         .post('/api/delete_record')
+	         .send({'table_name': 'dareity_user', 'id': createUserId , 'token': token})
+	         .end(function(err,res){
+						 res.body.should.be.a('object')
+						 res.body.should.have.property('id')
+						 res.body.should.have.property('name')
+						 res.body.should.have.property('password')
+						 res.body.should.have.property('is_npo')
+						 res.body.should.have.property('email')
+	             done();
+	         })
+	 	    });
+			})
+ 	  })
+
+		it('should delete a record from the dare table ', function(done) {
+			createUserForDelete(server, (err)=> {
+		 		getTokenForTest(server, (err, token)=>{
+		         chai.request(server)
+		         .post('/api/delete_record')
+		         .send({'table_name': 'dare', 'id': dareId , 'token': token})
+		         .end(function(err,res){
+							 console.log(res.body)
+							 res.body.should.be.a('object')
+							 res.body.should.have.property('id')
+							 res.body.should.have.property('title')
+							 res.body.should.have.property('description')
+							 res.body.should.have.property('npo_creator')
+							 res.body.should.have.property('expiration')
+							 res.body.should.have.property('total_pledge_amount')
+							 res.body.should.have.property('pledge_threshold')
+		             done();
+		         })
+		 	    });
+				})
+	 	  })
+
+});
