@@ -52,36 +52,9 @@ apiRoutes.post('/update_dare', darecontroller.updateDare);
 
 
 // user_dare routes
-apiRoutes.post('/create_user_dare', function(req, res) {
-  console.log('decoded', req.decoded)
-  const {broadcaster_id, dare_id, npo_id} = req.body
-  if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined) {
-    res.json('Please set all required parameters.')
-    res.end()
-  }
-  const queryString = `INSERT INTO user_dare (broadcaster_id, dare_id, npo_id, pledge_amount_threshold) VALUES (${broadcaster_id}, ${dare_id}, ${npo_id}, (SELECT pledge_threshold FROM dare WHERE id = ${dare_id}))`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
+apiRoutes.post('/set_user_dare', darecontroller.setDare);
 
-apiRoutes.post('/fetch_user_dare', function(req, res) {
-  const id = req.body.id
-  const queryString = `SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = ${id}`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
+apiRoutes.post('/fetch_user_dare', darecontroller.fetchUserDare);
 
 apiRoutes.post('/update_user_dare', function(req, res) {
   let columns = ''

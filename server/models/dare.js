@@ -61,4 +61,38 @@ Dare.updateDare = function(query, id, callback) {
  })
 }
 
+Dare.setDare = function(query, callback) {
+  const {
+  			broadcaster_id, 
+  			dare_id, 
+  			npo_id, 
+  			pledge_amount_threshold
+  		} = query;
+  if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined || pledge_amount_threshold === undefined) {
+    callback('Please set all required parameters.')
+  }
+  const queryString = `INSERT INTO user_dare (broadcaster_id, dare_id, npo_id, pledge_amount_threshold) VALUES (${broadcaster_id}, ${dare_id}, ${npo_id}, ${pledge_amount_threshold})`
+  db.query(queryString, function(err, result) {
+    if (err) {
+      callback(err.message)
+    } else {
+      callback(null, result)
+    }
+  })
+}
+
+Dare.fetchUserDare = function(query, callback) {
+  const queryString = 'SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = $1 OR broadcaster_id = $1 OR dare_id = $1 OR npo_id = $1'
+  db.query(queryString, [query], function(err, result) {
+     const match = _.get(result, 'rows[0]')
+    if (err) {
+      callback(err.message)
+    } else if (match) {
+      callback(null, match)
+    } else {
+     callback('No dare found.')
+ 	}
+  })
+}
+
 module.exports = Dare;
