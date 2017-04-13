@@ -7,11 +7,40 @@ const userController = require('../server/controllers/userController')
 chai.use(chaiHttp);
 
 var should = chai.should();
-var userId;
 var uniqueName = 'smeary' + Date.now()
 var uniqueDare = 'plunge' + Date.now()
-var createUserId;
-var dareId;
+
+const getTokenForTest = function(server, callback){
+  chai.request(server)
+      .post('/api/authenticate')
+	  .send({'name': uniqueName, 'password': "abc"})
+      .end((err, res) => {
+      	callback(null, res.res.body.token)
+  	})
+}
+const createUserForDelete = function(server, callback){
+  chai.request(server)
+      .post('/api/create_user')
+	    .send({'name': uniqueName+Math.floor(Math.random() * 1000), 'password': 'abc', 'email': "bob.abc@gmail.com", 'is_npo': true})
+      .end((err, res) => {
+				if(err){
+					callback(err)
+				} else {
+     			callback(null, res.res.body.id)
+				}
+  	})
+}
+const createDareForDelete = function(server, userId, token, callback){
+  chai.request(server)
+      .post('/api/create_dare')
+	    .send({'npo_creator': userId, 'dare_title': uniqueDare+'1', 'token': token, 'dare_description': "interpret as you'd like"})
+			.end((err, res) => {
+     		callback(null, res.res.body.id)
+  	})
+}
+
+
+
 
 describe('POST /api/create_user', function() {
 	it('should return NPO user object', function(done){
@@ -27,7 +56,6 @@ describe('POST /api/create_user', function() {
          res.body.name.should.equal(uniqueName);
          res.body.email.should.equal('bob.abc@gmail.com');
          res.body.is_npo.should.equal(true);
-         userId = res.body.id;
          done();
      	})
     });
@@ -50,84 +78,69 @@ describe('POST /api/authenticate', function() {
 	});
 });
 
-const getTokenForTest = function(server, callback){
-  chai.request(server)
-      .post('/api/authenticate')
-	  .send({'name': uniqueName, 'password': "abc"})
-      .end((err, res) => {
-      	callback(null, JSON.parse(res.res.text).token)
-  	})
-}
 
 describe('POST /api/create_dare', function() {
- 	it('should return dare object', function(done) {
- 		getTokenForTest(server, (err, token)=>{
-         chai.request(server)
-         .post('/api/create_dare')
-         .send({'npo_creator': userId, 'dare_title': uniqueDare, 'token': token, 'dare_description': "interpret as you'd like"})
-         .end(function(err,res){
-             res.body.should.be.a('object');
-             res.body.should.have.property('title');
-             res.body.should.have.property('description');
-             res.body.title.should.equal(uniqueDare);
-             res.body.description.should.equal("interpret as you'd like");
-						 dareId = res.body.id
-						 console.log(res.body)
-             done();
-         })
- 	    });
- 	})
+	it('should return dare object', function(done) {
+		createUserForDelete(server,(err, userId)=> {
+			getTokenForTest(server, (err, token)=> {
+					chai.request(server)
+					.post('/api/create_dare')
+					.send({'npo_creator': userId, 'dare_title': uniqueDare, 'token': token, 'dare_description': "interpret as you'd like"})
+					.end(function(err,res){
+						res.body.should.be.a('object');
+						res.body.should.have.property('title');
+						res.body.should.have.property('description');
+						res.body.title.should.equal(uniqueDare)
+						res.body.description.should.equal("interpret as you'd like");
+						done();
+					})
+			})
+		})
+	})
 });
 
-const createUserForDelete = function(server, callback){
-  chai.request(server)
-      .post('/api/create_user')
-	    .send({'name': uniqueName+'abc', 'password': 'abc', 'email': "bob.abc@gmail.com", 'is_npo': true})
-      .end((err, res) => {
-				createUserId = res.res.body.id
-      	callback(null, JSON.parse(res.res.text))
-  	})
-}
 
 describe('POST /api/delete_record', function() {
- 	it('should delete a record from the dareity_user table', function(done) {
-		createUserForDelete(server, (err)=> {
-	 		getTokenForTest(server, (err, token)=>{
-	         chai.request(server)
-	         .post('/api/delete_record')
-	         .send({'table_name': 'dareity_user', 'id': createUserId , 'token': token})
-	         .end(function(err,res){
-						 res.body.should.be.a('object')
-						 res.body.should.have.property('id')
-						 res.body.should.have.property('name')
-						 res.body.should.have.property('password')
-						 res.body.should.have.property('is_npo')
-						 res.body.should.have.property('email')
-	             done();
-	         })
-	 	    });
-			})
- 	  })
-
-		it('should delete a record from the dare table ', function(done) {
-			createUserForDelete(server, (err)=> {
-		 		getTokenForTest(server, (err, token)=>{
-		         chai.request(server)
-		         .post('/api/delete_record')
-		         .send({'table_name': 'dare', 'id': dareId , 'token': token})
-		         .end(function(err,res){
-							 console.log(res.body)
-							 res.body.should.be.a('object')
-							 res.body.should.have.property('id')
-							 res.body.should.have.property('title')
-							 res.body.should.have.property('description')
-							 res.body.should.have.property('npo_creator')
-							 res.body.should.have.property('expiration')
-							 res.body.should.have.property('total_pledge_amount')
-							 res.body.should.have.property('pledge_threshold')
-		             done();
-		         })
-		 	    });
+	it('should delete a record from the dareity_user table', function(done) {
+		createUserForDelete(server, (err, userId)=> {
+			getTokenForTest(server, (err, token)=>{
+				console.log('The user id is....', userId)
+				chai.request(server)
+				.post('/api/delete_record')
+				.send({'table_name': 'dareity_user', 'id': userId , 'token': token})
+				.end(function(err,res){
+					res.body.should.be.a('object')
+					res.body.should.have.property('id')
+					res.body.should.have.property('name')
+					res.body.should.have.property('password')
+					res.body.should.have.property('is_npo')
+					res.body.should.have.property('email')
+					done();
 				})
-	 	  })
+			});
+		})
+	})
+
+	it('should delete a record from the dare table ', function(done) {
+		createUserForDelete(server, (err, userId)=> {
+			getTokenForTest(server, (err, token)=>{
+				createDareForDelete(server, userId, token, (err, dareId)=>{
+					chai.request(server)
+					.post('/api/delete_record')
+					.send({'table_name': 'dare', 'id': dareId , 'token': token})
+					.end(function(err,res){
+						res.body.should.be.a('object')
+						res.body.should.have.property('id')
+						res.body.should.have.property('title')
+						res.body.should.have.property('description')
+						res.body.should.have.property('npo_creator')
+						res.body.should.have.property('expiration')
+						res.body.should.have.property('total_pledge_amount')
+						res.body.should.have.property('pledge_threshold')
+						done();
+					})
+				})
+			});
+		})
+	})
 });
