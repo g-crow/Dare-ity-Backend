@@ -1,8 +1,8 @@
-const bcrypt = require('bcrypt')
-const config = require('../../config')
-const db = require('../../db')
+const bcrypt = require('bcrypt');
+const config = require('../../config');
+const db = require('../../db');
 const jwt = require('jsonwebtoken');
-
+const _ = require('lodash');
 class User{
 	constructor(name, password, email, is_npo){
 		this.name = name;
@@ -18,7 +18,8 @@ class User{
 			const hashed_password = ''
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
 				if (!hashErr){
-					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo) VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo})`
+					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo) 
+          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}) RETURNING *`
 					db.query(queryString, callback)
 				} else {
 					callback(hashErr)
@@ -29,7 +30,7 @@ class User{
 }
 
 User.authenticate = function(name, password, callback){
-    db.query(`SELECT name, is_npo, password FROM dareity_user WHERE name = '${name}'`,
+    db.query(`SELECT name, id, is_npo, password FROM dareity_user WHERE name = '${name}'`,
     function(err, result) {
       const user = result.rows[0]
       if (err) throw err;
@@ -42,7 +43,7 @@ User.authenticate = function(name, password, callback){
             } else {
               var token = jwt.sign(user, config.secret, {
                 expiresIn: "1d" // expires in 24 hours
-              });
+              }); 
               callback(null, token)
             }
           });
@@ -54,11 +55,11 @@ User.authenticate = function(name, password, callback){
 User.requireLogin = function(req, res, next) {
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
-
     jwt.verify(token, config.secret, function(err, decoded) {
       if (err) {
         return res.json({ success: false, message: 'Failed to authenticate token.' });
       } else {
+        decoded.id = req.body.npo_creator;
         req.decoded = decoded;
         next();
       }
@@ -71,5 +72,36 @@ User.requireLogin = function(req, res, next) {
     });
   }
 };
+
+User.fetchUser = function(query, callback) {
+  db.query('SELECT name, email FROM dareity_user WHERE name=$1 OR email=$1', [query], function(err, result){
+    const user = _.get(result, 'rows[0]')
+    if (err){
+      callback(err.message)
+    } else if (user) {
+      callback(null, user)
+    } else {
+      callback('No user found.')
+    }
+  })
+};
+
+User.updateUser = function(query, id, callback) {
+  let columns = ''
+  if (query.is_npo) columns += `is_npo = ${query.is_npo}, `
+  if (query.email) columns += `email = '${query.email}', `
+  columns = columns.replace(/, $/, '')
+  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${id}`
+  db.query(queryString, function(err, result) {
+    console.log('result', result);
+    if (err) {
+      callback('Sorry, please try again')
+    } else {
+      callback(null, 'User info updated')
+    }
+  })
+}
+
+
 
 module.exports = User

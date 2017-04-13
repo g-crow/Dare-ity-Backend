@@ -5,15 +5,16 @@ const morgan = require('morgan');
 const config = require('./config');
 const jwt = require('jsonwebtoken');
 const User = require('./server/models/user');
+const Dare = require('./server/models/dare');
 const usercontroller = require('./server/controllers/userController');
-const { requireLogin } = require('./server/models/user')
-
+const db = require('./db')
+const darecontroller = require('./server/controllers/dareController');
+const { requireLogin } = require('./server/models/user');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(morgan('dev'));
 
-const db = require('./db')
 
 //this initializes a connection db
 //it will keep idle connections open for 30 seconds
@@ -36,90 +37,23 @@ app.get('/', function(req, res) {
 
 app.use('/api', apiRoutes);
 
-//POST
+//USER ROUTES
 apiRoutes.post('/create_user', usercontroller.createuser);
 apiRoutes.post('/authenticate', usercontroller.authenticate);
-
-app.post('/api/fetch_user', function(req, res){
-  const name= req.body.name;
-  db.query("SELECT id, name, is_npo FROM user WHERE name = '" + name + "'", function(err, result){
-    if(err){
-      console.error("error", err.message);
-    } else {
-      res.json(result)
-    }
-  })
-})
-
-apiRoutes.post('/update_user', function(req, res) {
-  let columns = ''
-  if (req.body.is_npo) columns += `is_npo = ${req.body.is_npo}, `
-  if (req.body.email) columns += `email = '${req.body.email}', `
-  columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${req.body.id}`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
+apiRoutes.post('/fetch_user', usercontroller.fetchUser); 
+apiRoutes.post('/update_user', usercontroller.updateUser);
 
 // dare routes
-apiRoutes.post('/create_dare', function(req, res) {
-  const {dare_title, dare_description, npo_creator} = req.body
-  if (dare_title === undefined || dare_description === undefined || npo_creator === undefined) {
-    res.json('Please set all required parameters.')
-    res.end()
-  }
-  const queryString = `INSERT INTO dare (title, description, npo_creator, expiration) VALUES ('${dare_title}', '${dare_description}', npo_creator, CURRENT_DATE + INTERVAL 30 DAY)`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
 
-apiRoutes.post('/fetch_dare', function(req, res) {
-  const id = req.body.id
-  const queryString = `SELECT id, title, description, npo_creator, expiration, total_pledge_amount FROM dare WHERE id = ${id}`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
+apiRoutes.post('/create_dare', darecontroller.createDare);
+apiRoutes.post('/fetch_dare', darecontroller.fetchDare);
+apiRoutes.post('/update_dare', darecontroller.updateDare);
 
-apiRoutes.post('/update_dare', function(req, res) {
-  let columns = ''
-  if (req.body.title) columns += `title = '${req.body.title}', `
-  if (req.body.description) columns += `description = '${req.body.description}', `
-  if (req.body.npo_creator) columns += `npo_creator = ${req.body.npo_creator}, `
-  if (req.body.expiration) columns += `expiration = '${req.body.expiration}', `
-  if (req.body.total_pledge_amount) columns += `total_pledge_amount = ${req.body.total_pledge_amount}, `
-  if (req.body.pledge_threshold) columns += `pledge_threshold = ${req.body.pledge_threshold}, `
-  columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE dare SET ${columns} WHERE id = ${req.body.id}`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
+
 
 // user_dare routes
 apiRoutes.post('/create_user_dare', function(req, res) {
+  console.log('decoded', req.decoded)
   const {broadcaster_id, dare_id, npo_id} = req.body
   if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined) {
     res.json('Please set all required parameters.')
@@ -220,91 +154,51 @@ apiRoutes.post('/update_pledge', function(req, res) {
   })
 })
 
-// one delete route for all DB records - table name and record id must be provided
-apiRoutes.post('/delete_record', function(req, res) {
-  const {table_name, id} = req.body
-  const queryString = `DELETE FROM ${table_name} WHERE id = ${id}`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
+
+
+app.post('/api/create_client_dare', function(req, res){
+  const {broadcaster_id, dare_id, npo_id} = req.body;
+  if(broadcaster_id === undefined || dare_id === undefined || npo_id === undefined){
+    res.json(JSON.stringify("Please fill empty fields."))
+    res.end()
+  }
+  var queryString = "INSERT INTO client_dare (broadcaster_id, dare_id, npo_id, pledge_amount_threshold) "
+    + "VALUES (" + broadcaster_id + ", " + dare_id + ", " + npo_id + ", (SELECT pledge_threshold FROM dare WHERE id = " + dare_id + "))"
+	pool.query(queryString, function(err, result){
+    if(err){
+			console.error("error", err.message)
+		} else {
+			res.json(JSON.stringify(result) + "This Means Success")
+		}
+  })
+})
+
+app.post('/api/fetch_user_dare', function(req, res){
+	var id = req.body.id;
+	var queryString = "SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = " + id
+	pool.query(queryString, function(err, result){
+    if(err){
+			console.error("error", err.message)
+		} else {
+			res.json(JSON.stringify(result.rows[0]))
+		}
+  })
+})
+
+// one delete route for all DB records - table name, id column name, and record id must be provided
+app.post('/api/delete_record', User.requireLogin, function(req, res){
+  const {table_name, id} = req.body;
+  var queryString = `DELETE FROM ${table_name} WHERE id = ${id} RETURNING *`
+  db.query(queryString, function(err, result){
+    if(err){
+      console.error("error", err.message)
     } else {
-      res.json(result)
+      res.json(result.rows[0])
     }
   })
 })
 
-
-// app.post('/api/create_dare', function(req, res){
-//   const {dare_title, dare_description, npo_creator} = req.body;
-//   if(dare_title === undefined || dare_description === undefined || npo_creator === undefined){
-//     res.json(JSON.stringify("Please fill empty fields."))
-//     res.end()
-//   }
-//   var queryString = "INSERT INTO dare (title, description, npo_creator) "
-//     + "VALUES ('" + dare_title + "', '" + dare_description + "', " + npo_creator + ")"
-// 	db.query(queryString, function(err, result){
-//     if(err){
-// 			console.error("error", err.message)
-// 		} else {
-// 			res.json(JSON.stringify(result))
-// 		}
-//   })
-// })
-
-// app.post('/api/fetch_dare', function(req, res){
-// 	var id = req.body.id;
-// 	var queryString = "SELECT id, title, description, npo_creator, expiration, total_pledge_amount FROM dare WHERE id = " + id
-// 	db.query(queryString, function(err, result){
-//     if(err){
-// 			console.error("error", err.message)
-// 		} else {
-// 			res.json(JSON.stringify(result.rows[0]))
-// 		}
-//   })
-// })
-
-// app.post('/api/create_client_dare', function(req, res){
-//   const {broadcaster_id, dare_id, npo_id} = req.body;
-//   if(broadcaster_id === undefined || dare_id === undefined || npo_id === undefined){
-//     res.json(JSON.stringify("Please fill empty fields."))
-//     res.end()
-//   }
-//   var queryString = "INSERT INTO client_dare (broadcaster_id, dare_id, npo_id, pledge_amount_threshold) "
-//     + "VALUES (" + broadcaster_id + ", " + dare_id + ", " + npo_id + ", (SELECT pledge_threshold FROM dare WHERE id = " + dare_id + "))"
-// 	db.query(queryString, function(err, result){
-//     if(err){
-// 			console.error("error", err.message)
-// 		} else {
-// 			res.json(JSON.stringify(result) + "This Means Success")
-// 		}
-//   })
-// })
-
-// app.post('/api/fetch_user_dare', function(req, res){
-// 	var id = req.body.id;
-// 	var queryString = "SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = " + id
-// 	db.query(queryString, function(err, result){
-//     if(err){
-// 			console.error("error", err.message)
-// 		} else {
-// 			res.json(JSON.stringify(result.rows[0]))
-// 		}
-//   })
-// })
-
-// // one delete route for all DB records - table name, id column name, and record id must be provided
-// app.post('/api/delete_record', function(req, res){
-// 	const {table_name, id_var, id} = req.body;
-// 	var queryString = "DELETE FROM " + table_name + " WHERE " + id_var + " = " + id
-// 	db.query(queryString, function(err, result){
-//     if(err){
-// 			console.error("error", err.message)
-// 		} else {
-// 			res.json(result + "This Means Success")
-// 		}
-//   })
-// })
-
-app.listen(process.env.PORT || 3001);
+var server = app.listen(process.env.PORT || 3001);
+module.exports = server;
 console.log('magic');
+

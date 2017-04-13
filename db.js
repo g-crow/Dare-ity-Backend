@@ -16,6 +16,7 @@ pg.defaults.ssl = true;
 const connectionConfig = process.env.DATABASE_URL ? parse(process.env.DATABASE_URL) : config.db;
 const pool = new pg.Pool(connectionConfig);
 
+
 pool.on('error', function (err, client) {
   // if an error is encountered by a client while it sits idle in the pool
   // the pool itself will emit an error event with both the error and
@@ -28,7 +29,6 @@ pool.on('error', function (err, client) {
 
 //export the query method for passing queries to the pool
 module.exports.query = function (text, values, callback) {
-  console.log('query:', text, values);
   return pool.query(text, values, callback);
 };
 
