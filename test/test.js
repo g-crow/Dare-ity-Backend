@@ -130,5 +130,4 @@ describe('POST /api/delete_record', function() {
 		 	    });
 				})
 	 	  })
-
 });
