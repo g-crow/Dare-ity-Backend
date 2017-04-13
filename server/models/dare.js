@@ -29,7 +29,7 @@ class Dare{
 
 
 Dare.fetchDare = function(query, callback) {
- const queryString = 'SELECT title, description FROM dare WHERE title=$1 OR description=$1'
+ const queryString = 'SELECT title, description, SUM(ammount) FROM dare INNER JOIN pledge ON dare.id=pledge.dareId WHERE title=$1 OR description=$1'
  db.query(queryString, [query], function(err, result) {
    const match = _.get(result, 'rows[0]')
    if (err) {

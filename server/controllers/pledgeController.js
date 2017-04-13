@@ -1,24 +1,23 @@
+const Pledge = require('../models/pledge');
 const keyPublishable = "pk_test_BN1prVDcCZgCOaRMmJ6IrCaF";
 const keySecret = "sk_test_0UF8Em57PInn7CqspRGhmuu8";
-const app = require("express")();
 const stripe = require("stripe")(keySecret);
-var bodyParser = require('body-parser');
 
+const createPledge = function(req, res){
+    const {
+        pledger_id,
+        broadcaster_id,
+        dare_id, 
+        npo_id,
+        user_dare_id,
+        pledge_amount,
+        to_refund
+        } = req.body
+    var pledge = new Pledge(pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund)
+    pledge.save((err, pledge) => err ? res.status(500).json(err) : res.json(pledge))
+}
 
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", '*');
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
-  next();
-});
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-
-app.post("/save-stripe-token",(req, res) => {
-
+const createStripePledge = (req, res) => {
   var token = req.body.token.id;
   var charge = stripe.charges.create({
   amount: req.body.pledge,
@@ -35,4 +34,7 @@ app.post("/save-stripe-token",(req, res) => {
       return res.json(message);
       res.end();
   });
-})
+}
+
+
+module.exports = { createPledge, createStripePledge }
