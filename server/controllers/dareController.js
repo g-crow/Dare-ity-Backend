@@ -57,4 +57,15 @@ const setDare = function(req, res) {
   })
 }
 
-module.exports = { createDare, fetchDare, updateDare, setDare };
+const fetchUserDare = function(req, res) {
+  const { query } = req.body
+  Dare.fetchUserDare(query, function(err, result) {
+    if (err) {
+      res.status(400).json({success: false, message: err})
+    } else {
+      res.json({ success: true, result: result})
+    }
+  })
+}
+
+module.exports = { createDare, fetchDare, updateDare, setDare, fetchUserDare };

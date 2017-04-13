@@ -81,4 +81,18 @@ Dare.setDare = function(query, callback) {
   })
 }
 
+Dare.fetchUserDare = function(query, callback) {
+  const queryString = 'SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = $1 OR broadcaster_id = $1 OR dare_id = $1 OR npo_id = $1'
+  db.query(queryString, [query], function(err, result) {
+     const match = _.get(result, 'rows[0]')
+    if (err) {
+      callback(err.message)
+    } else if (match) {
+      callback(null, match)
+    } else {
+     callback('No dare found.')
+ 	}
+  })
+}
+
 module.exports = Dare;
