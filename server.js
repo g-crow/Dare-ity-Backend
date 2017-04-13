@@ -44,36 +44,15 @@ apiRoutes.post('/fetch_user', usercontroller.fetchUser);
 apiRoutes.post('/update_user', usercontroller.updateUser);
 
 // dare routes
-
 apiRoutes.post('/create_dare', darecontroller.createDare);
 apiRoutes.post('/fetch_dare', darecontroller.fetchDare);
 apiRoutes.post('/update_dare', darecontroller.updateDare);
 
-
-
 // user_dare routes
 apiRoutes.post('/set_user_dare', darecontroller.setDare);
-
 apiRoutes.post('/fetch_user_dare', darecontroller.fetchUserDare);
+apiRoutes.post('/update_user_dare', darecontroller.updateUserDare);
 
-apiRoutes.post('/update_user_dare', function(req, res) {
-  let columns = ''
-  if (req.body.broadcaster_id) columns += `broadcaster_id = ${req.body.broadcaster_id}, `
-  if (req.body.dare_id) columns += `dare_id = ${req.body.dare_id}, `
-  if (req.body.npo_id) columns += `npo_id = ${req.body.npo_id}, `
-  if (req.body.pledge_amount_threshold) columns += `pledge_amount_threshold = ${req.body.pledge_amount_threshold}, `
-  if (req.body.pledge_status) columns += `pledge_status = ${req.body.pledge_status}, `
-  columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE user_dare SET ${columns} WHERE id = ${req.body.id}`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
 
 // pledge routes
 apiRoutes.post('/create_pledge', function(req, res) {
@@ -142,18 +121,6 @@ app.post('/api/create_client_dare', function(req, res){
 			console.error("error", err.message)
 		} else {
 			res.json(JSON.stringify(result) + "This Means Success")
-		}
-  })
-})
-
-app.post('/api/fetch_user_dare', function(req, res){
-	var id = req.body.id;
-	var queryString = "SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = " + id
-	pool.query(queryString, function(err, result){
-    if(err){
-			console.error("error", err.message)
-		} else {
-			res.json(JSON.stringify(result.rows[0]))
 		}
   })
 })

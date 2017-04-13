@@ -95,4 +95,23 @@ Dare.fetchUserDare = function(query, callback) {
   })
 }
 
+Dare.updateUserDare = function(query, callback) {
+  let columns = ''
+  if (query.broadcaster_id) columns += `broadcaster_id = ${query.broadcaster_id}, `
+  if (query.dare_id) columns += `dare_id = ${query.dare_id}, `
+  if (query.npo_id) columns += `npo_id = ${query.npo_id}, `
+  if (query.pledge_amount_threshold) columns += `pledge_amount_threshold = ${query.pledge_amount_threshold}, `
+  if (query.pledge_status) columns += `pledge_status = ${query.pledge_status}, `
+  columns = columns.replace(/, $/, '')
+  const queryString = `UPDATE user_dare SET ${columns} WHERE id = ${query.id}`
+  db.query(queryString, function(err, result) {
+    if (err) {
+     console.log('ERRORRRRRR', err)
+     callback('Sorry, please try again')
+   } else {
+     callback(null, 'Dare info updated.')
+   }
+  })
+}
+
 module.exports = Dare;
