@@ -2,7 +2,7 @@ const db = require('../../db');
 
 class Pledge {
     constructor(pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund){
-        this.pledger_id = pledger_id;
+        this.pledger_id = pledger_id; //pledger_id is the same as user_id; will be grabbed from the state
         this.broadcaster_id = broadcaster_id;
         this.dare_id = dare_id;
         this.npo_id = npo_id;

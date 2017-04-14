@@ -58,8 +58,8 @@ const setDare = function(req, res) {
 }
 
 const fetchUserDare = function(req, res) {
-  const { query } = req.body
-  Dare.fetchUserDare(query, function(err, result) {
+  const id = req.body.id
+  Dare.fetchUserDare(id, function(err, result) {
     if (err) {
       res.status(400).json({success: false, message: err})
     } else {
