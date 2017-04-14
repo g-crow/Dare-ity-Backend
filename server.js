@@ -6,10 +6,22 @@ const config = require('./config');
 const jwt = require('jsonwebtoken');
 const User = require('./server/models/user');
 const Dare = require('./server/models/dare');
+const Pledge = require('./server/models/pledge');
 const usercontroller = require('./server/controllers/userController');
 const db = require('./db')
 const darecontroller = require('./server/controllers/dareController');
+const pledgecontroller = require('./server/controllers/pledgeController');
 const { requireLogin } = require('./server/models/user');
+
+
+//This is for stripe
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", '*');
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
+  next();
+});
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -28,7 +40,7 @@ db.connect(function(err, result){
 })
 
 
-//API Routes
+//API ROUTES
 var apiRoutes = express.Router();
 
 app.get('/', function(req, res) {
@@ -43,68 +55,41 @@ apiRoutes.post('/authenticate', usercontroller.authenticate);
 apiRoutes.post('/fetch_user', usercontroller.fetchUser); 
 apiRoutes.post('/update_user', usercontroller.updateUser);
 
-// dare routes
+//DARE ROUTES
 apiRoutes.post('/create_dare', darecontroller.createDare);
 apiRoutes.post('/fetch_dare', darecontroller.fetchDare);
 apiRoutes.post('/update_dare', darecontroller.updateDare);
 
-// user_dare routes
+//USER_DARE ROUTES
 apiRoutes.post('/set_user_dare', darecontroller.setDare);
 apiRoutes.post('/fetch_user_dare', darecontroller.fetchUserDare);
 apiRoutes.post('/update_user_dare', darecontroller.updateUserDare);
 
+//PLEDGE ROUTES
+app.post("/save-stripe-token", pledgecontroller.createStripePledge);
+apiRoutes.post('/create_pledge', pledgecontroller.createPledge);
+apiRoutes.post('/fetch_pledge', pledgecontroller.fetchPledge);
 
-// pledge routes
-apiRoutes.post('/create_pledge', function(req, res) {
-  const {pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund} = req.body
-  if (pledger_id === undefined || broadcaster_id === undefined || dare_id === undefined || npo_id === undefined || user_dare_id === undefined || pledge_amount === undefined || to_refund === undefined) {
-    res.json('Please set all required parameters.')
-    res.end()
-  }
-  const queryString = `INSERT INTO pledge (pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund) VALUES (${pledger_id}, ${broadcaster_id}, ${dare_id}, ${npo_id}, ${user_dare_id}, ${pledge_amount}, ${to_refund})`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
-
-apiRoutes.post('/fetch_pledge', function(req, res) {
-  const id = req.body.id
-  const queryString = `SELECT id, pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund FROM pledge WHERE id = ${id}`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
-
-apiRoutes.post('/update_pledge', function(req, res) {
-  let columns = ''
-  if (req.body.pledger_id) columns += `pledger_id = ${req.body.pledger_id}, `
-  if (req.body.broadcaster_id) columns += `broadcaster_id = ${req.body.broadcaster_id}, `
-  if (req.body.dare_id) columns += `dare_id = ${req.body.dare_id}, `
-  if (req.body.npo_id) columns += `npo_id = ${req.body.npo_id}, `
-  if (req.body.user_dare_id) columns += `user_dare_id = ${req.body.user_dare_id}, `
-  if (req.body.pledge_amount) columns += `pledge_amount = ${req.body.pledge_amount}, `
-  if (req.body.to_refund) columns += `to_refund = ${req.body.to_refund}, `
-  columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE pledge SET ${columns} WHERE id = ${req.body.id}`
-  db.query(queryString, function(err, result) {
-    if (err) {
-      console.error('error', err.message)
-      res.json(err.message)
-    } else {
-      res.json(result)
-    }
-  })
-})
+// apiRoutes.post('/update_pledge', function(req, res) {
+//   let columns = ''
+//   if (req.body.pledger_id) columns += `pledger_id = ${req.body.pledger_id}, `
+//   if (req.body.broadcaster_id) columns += `broadcaster_id = ${req.body.broadcaster_id}, `
+//   if (req.body.dare_id) columns += `dare_id = ${req.body.dare_id}, `
+//   if (req.body.npo_id) columns += `npo_id = ${req.body.npo_id}, `
+//   if (req.body.user_dare_id) columns += `user_dare_id = ${req.body.user_dare_id}, `
+//   if (req.body.pledge_amount) columns += `pledge_amount = ${req.body.pledge_amount}, `
+//   if (req.body.to_refund) columns += `to_refund = ${req.body.to_refund}, `
+//   columns = columns.replace(/, $/, '')
+//   const queryString = `UPDATE pledge SET ${columns} WHERE id = ${req.body.id}`
+//   db.query(queryString, function(err, result) {
+//     if (err) {
+//       console.error('error', err.message)
+//       res.json(err.message)
+//     } else {
+//       res.json(result)
+//     }
+//   })
+// })
 
 
 
@@ -137,6 +122,8 @@ app.post('/api/delete_record', User.requireLogin, function(req, res){
     }
   })
 })
+
+
 
 var server = app.listen(process.env.PORT || 3001);
 module.exports = server;
