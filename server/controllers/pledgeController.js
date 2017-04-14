@@ -20,10 +20,10 @@ const createPledge = function(req, res){
 const createStripePledge = (req, res) => {
   var token = req.body.token.id;
   var charge = stripe.charges.create({
-  amount: req.body.pledge,
-  currency: "usd",
-  description: "Donation",
-  source: token,
+    amount: req.body.pledge,
+    currency: "usd",
+    description: "Donation",
+    source: token,
   }, function(err, charge) {
     var message;
       if (err){
@@ -36,5 +36,19 @@ const createStripePledge = (req, res) => {
   });
 }
 
+const fetchPledge = function(req, res) {
+  const id = req.body.id
+  Pledge.fetchPledge(id, (err, result) => {
+    if (err) {
+      res.status(400).json({success: false, message: err})
+    } else {
+      res.json({
+                success: true,
+                result: result
+              });
+    }
+  })
+}
 
-module.exports = { createPledge, createStripePledge }
+module.exports = { createPledge, createStripePledge, fetchPledge }
+

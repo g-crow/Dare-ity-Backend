@@ -26,5 +26,19 @@ class Pledge {
     }
 }
 
+Pledge.fetchPledge = function(id, callback) {
+  const queryString = `SELECT id, pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund FROM pledge WHERE id = ${id}`
+  db.query(queryString, function(err, result) {
+    if(err){
+      callback(err.message)
+    } else if(result.rows[0]){
+      callback(null, result.rows[0])
+    } else{
+      callback('No pledge found.')
+    }
+  })
+}
+
 
 module.exports = Pledge;
+

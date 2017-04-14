@@ -40,7 +40,7 @@ db.connect(function(err, result){
 })
 
 
-//API Routes
+//API ROUTES
 var apiRoutes = express.Router();
 
 app.get('/', function(req, res) {
@@ -55,33 +55,20 @@ apiRoutes.post('/authenticate', usercontroller.authenticate);
 apiRoutes.post('/fetch_user', usercontroller.fetchUser); 
 apiRoutes.post('/update_user', usercontroller.updateUser);
 
-// dare routes
+//DARE ROUTES
 apiRoutes.post('/create_dare', darecontroller.createDare);
 apiRoutes.post('/fetch_dare', darecontroller.fetchDare);
 apiRoutes.post('/update_dare', darecontroller.updateDare);
 
-// user_dare routes
+//USER_DARE ROUTES
 apiRoutes.post('/set_user_dare', darecontroller.setDare);
 apiRoutes.post('/fetch_user_dare', darecontroller.fetchUserDare);
 apiRoutes.post('/update_user_dare', darecontroller.updateUserDare);
 
-
-// pledge routes
+//PLEDGE ROUTES
 app.post("/save-stripe-token", pledgecontroller.createStripePledge);
 apiRoutes.post('/create_pledge', pledgecontroller.createPledge);
-
-// apiRoutes.post('/fetch_pledge', function(req, res) {
-//   const id = req.body.id
-//   const queryString = `SELECT id, pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund FROM pledge WHERE id = ${id}`
-//   db.query(queryString, function(err, result) {
-//     if (err) {
-//       console.error('error', err.message)
-//       res.json(err.message)
-//     } else {
-//       res.json(result)
-//     }
-//   })
-// })
+apiRoutes.post('/fetch_pledge', pledgecontroller.fetchPledge);
 
 // apiRoutes.post('/update_pledge', function(req, res) {
 //   let columns = ''
