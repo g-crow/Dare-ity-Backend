@@ -99,12 +99,60 @@ describe('POST /api/create_dare', function() {
 	})
 });
 
+describe('POST /api/fetch_user', function(){
+	it('should get a user object', function(done){
+		chai.request(server)
+		.post('/api/fetch_user')
+		.send({'query': uniqueName})
+		.end(function(err, res){
+			res.body.should.be.a('object');
+			res.body.should.have.a.property('success');
+			res.body.should.have.a.property('result');
+			res.body.result.should.be.a('object')
+			res.body.result.should.have.a.property('name');
+			res.body.result.should.have.a.property('email');
+			done();
+		})
+	})
+})
+
+describe('POST /api/update_user', function() {
+	it('should update a users information', function(done) {
+		createUserForDelete(server,(err, userId)=> {
+			getTokenForTest(server, (err, token)=> {
+					chai.request(server)
+					.post('/api/update_user')
+					.send({'id': userId, 'email': 'bob.abc@gmail.com' })
+					.end(function(err,res){
+						res.body.should.be.a('object');
+						res.body.should.have.property('success');
+						res.body.should.have.property('result');
+						done();
+					})
+			})
+		})
+	})
+	it('should update a users information', function(done) {
+		createUserForDelete(server,(err, userId)=> {
+			getTokenForTest(server, (err, token)=> {
+					chai.request(server)
+					.post('/api/update_user')
+					.send({'id': userId, 'is_npo': true })
+					.end(function(err,res){
+						res.body.should.be.a('object');
+						res.body.should.have.property('success');
+						res.body.should.have.property('result');
+						done();
+					})
+			})
+		})
+	})
+});
 
 describe('POST /api/delete_record', function() {
 	it('should delete a record from the dareity_user table', function(done) {
 		createUserForDelete(server, (err, userId)=> {
 			getTokenForTest(server, (err, token)=>{
-				console.log('The user id is....', userId)
 				chai.request(server)
 				.post('/api/delete_record')
 				.send({'table_name': 'dareity_user', 'id': userId , 'token': token})

@@ -18,7 +18,7 @@ class User{
 			const hashed_password = ''
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
 				if (!hashErr){
-					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo) 
+					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo)
           VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}) RETURNING *`
 					db.query(queryString, callback)
 				} else {
@@ -43,7 +43,7 @@ User.authenticate = function(name, password, callback){
             } else {
               var token = jwt.sign(user, config.secret, {
                 expiresIn: "1d" // expires in 24 hours
-              }); 
+              });
               callback(null, token)
             }
           });
@@ -94,7 +94,7 @@ User.updateUser = function(query, id, callback) {
   const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${id}`
   db.query(queryString, function(err, result) {
     if (err) {
-      callback('Sorry, please try again')
+      callback(err)
     } else {
       callback(null, 'User info updated')
     }
