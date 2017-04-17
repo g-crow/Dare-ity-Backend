@@ -50,5 +50,19 @@ const fetchPledge = function(req, res) {
   })
 }
 
-module.exports = { createPledge, createStripePledge, fetchPledge }
+const updatePledge = function(req, res) {
+  const query = req.body;
+  Pledge.updatePledge(query, (err, result) => {
+    if (err) {
+      res.status(400).json({success: false, message: err})
+    } else {
+      res.json({
+              success: true,
+              result: result
+            });
+    }
+  })
+}
+
+module.exports = { createPledge, createStripePledge, fetchPledge, updatePledge }
 

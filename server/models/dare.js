@@ -81,7 +81,6 @@ Dare.setDare = function(query, callback) {
   })
 }
 
-
 //From the pledge table we need the sum of the pledge amount where dare_id is equal to the dare id input
 //Create function on front end to sum up all the values of pledge_amount for specific dare_id
 Dare.fetchUserDare = function(id, callback) {
