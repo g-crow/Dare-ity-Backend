@@ -40,18 +40,18 @@ app.use('/api', apiRoutes);
 //USER ROUTES
 apiRoutes.post('/create_user', usercontroller.createuser);
 apiRoutes.post('/authenticate', usercontroller.authenticate);
-apiRoutes.post('/fetch_user', usercontroller.fetchUser); 
+apiRoutes.post('/fetch_user', usercontroller.fetchUser);
 apiRoutes.post('/update_user', usercontroller.updateUser);
 
 // dare routes
-apiRoutes.post('/create_dare', darecontroller.createDare);
+apiRoutes.post('/create_dare', requireLogin, darecontroller.createDare);
 apiRoutes.post('/fetch_dare', darecontroller.fetchDare);
-apiRoutes.post('/update_dare', darecontroller.updateDare);
+apiRoutes.post('/update_dare', requireLogin, darecontroller.updateDare);
 
 // user_dare routes
-apiRoutes.post('/set_user_dare', darecontroller.setDare);
+apiRoutes.post('/set_user_dare', requireLogin, darecontroller.setDare);
 apiRoutes.post('/fetch_user_dare', darecontroller.fetchUserDare);
-apiRoutes.post('/update_user_dare', darecontroller.updateUserDare);
+apiRoutes.post('/update_user_dare', requireLogin, darecontroller.updateUserDare);
 
 
 // pledge routes
@@ -141,4 +141,3 @@ app.post('/api/delete_record', User.requireLogin, function(req, res){
 var server = app.listen(process.env.PORT || 3001);
 module.exports = server;
 console.log('magic');
-
