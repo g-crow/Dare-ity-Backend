@@ -10,7 +10,7 @@ class User{
 		this.email = email;
 		this.is_npo = is_npo;
 	}
-
+  
 	save(callback){
 		if (!this.name || !this.password){
 			callback(new Error('No Name or password provided'))
