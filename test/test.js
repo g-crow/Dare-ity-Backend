@@ -150,9 +150,51 @@ describe('POST /api/create_dare', function() {
 					res.body.should.have.property('fields')
 					done();
 				})
+			})
 		})
 	})
 })
+
+describe('POST /api/set_user_dare', function() {
+	it('should return a response title', function(done) {
+		createUserForDelete(server,(err, userId)=> {
+			getTokenForTest(server, (err, token)=> {
+				chai.request(server)
+				.post('/api/set_user_dare')
+				.send({'broadcaster_id': userId, 'dare_id': 2, 'npo_id': 3, 'pledge_amount_threshold': 30, 'token': token})
+				.end(function(err,res){
+					res.body.should.be.a('object');
+					res.body.should.have.property('success')
+					res.body.should.have.property('result')
+					res.body.result.should.have.property('command')
+					res.body.result.should.have.property('rowCount')
+					res.body.result.should.have.property('rows')
+					res.body.result.should.have.property('fields')
+					done();
+				})
+			})
+		})
+	})
+})
+
+describe('POST /api/fetch_user_dare', function() {
+	it('should grab a dare', function(done) {
+		chai.request(server)
+		.post('/api/fetch_user_dare')
+		.send({'query': 1})                                     // query needs to be updated too ID once updated routes are merged to master
+		.end(function(err,res){
+			console.log(res.body, '!!!!!!!!!!!!!!!!!!')
+			res.body.should.be.a('object');
+			res.body.should.have.property('success');
+			res.body.should.have.property('result');
+			res.body.result.should.have.property('id');
+			res.body.result.should.have.property('broadcaster_id')
+			res.body.result.should.have.property('dare_id')
+			res.body.result.should.have.property('pledge_amount_threshold')
+			res.body.result.should.have.property('npo_id')
+			done();
+		})
+	})
 })
 
 describe('POST /api/fetch_dare', function() {
@@ -163,7 +205,6 @@ describe('POST /api/fetch_dare', function() {
 			.post('/api/fetch_dare')
 			.send({'query': queryVal})
 			.end(function(err,res){
-				console.log(res.body, '!!!!!!!!!!!!!!!!!!')
 				res.body.should.be.a('object');
 				res.body.should.have.property('success');
 				res.body.result.should.be.a('object');
@@ -254,6 +295,84 @@ describe('POST /api/update_dare', function() {
 	})
 });
 
+describe('POST /api/update_user_dare', function() {
+	it('should update dare title', function(done) {
+		createUserForDelete(server,(err, userId)=> {
+			getTokenForTest(server, (err, token)=> {
+				chai.request(server)
+				.post('/api/update_user_dare')
+				.send({'id': 2, 'npo_id': 4, 'token': token })
+				.end(function(err,res){
+					res.body.should.be.a('object');
+					res.body.should.have.property('success');
+					res.body.should.have.property('result');
+					done();
+				})
+			})
+		})
+	})
+	it('should update dare description', function(done) {
+		createUserForDelete(server,(err, userId)=> {
+			getTokenForTest(server, (err, token)=> {
+				chai.request(server)
+				.post('/api/update_user_dare')
+				.send({'id': 2, 'broadcaster_id': 7, 'token': token })
+				.end(function(err,res){
+					res.body.should.be.a('object');
+					res.body.should.have.property('success');
+					res.body.should.have.property('result');
+					done();
+				})
+			})
+		})
+	})
+	it('should update npo creator', function(done) {
+		createUserForDelete(server,(err, userId)=> {
+			getTokenForTest(server, (err, token)=> {
+				chai.request(server)
+				.post('/api/update_user_dare')
+				.send({'id': 2, 'dare_id': 11, 'token': token })
+				.end(function(err,res){
+					res.body.should.be.a('object');
+					res.body.should.have.property('success');
+					res.body.should.have.property('result');
+					done();
+				})
+			})
+		})
+	})
+	it('should update expiration date', function(done) {
+		createUserForDelete(server,(err, userId)=> {
+			getTokenForTest(server, (err, token)=> {
+				chai.request(server)
+				.post('/api/update_user_dare')
+				.send({'id': 2, 'pledge_amount_threshold': 45, 'token': token })
+				.end(function(err,res){
+					res.body.should.be.a('object');
+					res.body.should.have.property('success');
+					res.body.should.have.property('result');
+					done();
+				})
+			})
+		})
+	})
+	it('should update pledge threshold amount', function(done) {
+		createUserForDelete(server,(err, userId)=> {
+			getTokenForTest(server, (err, token)=> {
+				chai.request(server)
+				.post('/api/update_user_dare')
+				.send({'id': 2, 'pledge_status': 100000000, 'token': token })
+				.end(function(err,res){
+					res.body.should.be.a('object');
+					res.body.should.have.property('success');
+					res.body.should.have.property('result');
+					done();
+				})
+			})
+		})
+	})
+});
+
 
 
 //DELETE RECORD ROUTE TESTS
@@ -277,4 +396,4 @@ describe('POST /api/delete_record', function() {
 			});
 		})
 	})
-	});
+});
