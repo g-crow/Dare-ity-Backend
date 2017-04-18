@@ -8,7 +8,7 @@ class User{
 		this.name = name;
 		this.password = password;
 		this.email = email;
-		this.is_npo = is_npo
+		this.is_npo = is_npo;
 	}
 
 	save(callback){
@@ -30,26 +30,25 @@ class User{
 }
 
 User.authenticate = function(name, password, callback){
-    db.query(`SELECT name, id, is_npo, password FROM dareity_user WHERE name = '${name}'`,
-    function(err, result) {
-      const user = result.rows[0]
-      if (err) throw err;
-        if (!user) {
-          callback('Authentication failed. User not found.')
-        } else {
-          bcrypt.compare(password, user.password, function(err, passwordValid){
-            if (passwordValid == false) {
-              callback('Authentication failed. Wrong password.');
-            } else {
-              var token = jwt.sign(user, config.secret, {
-                expiresIn: "1d" // expires in 24 hours
-              }); 
-              callback(null, token)
-            }
-          });
-        }
-    }
-  )
+  db.query(`SELECT name, id, is_npo, password FROM dareity_user WHERE name = '${name}'`,
+  function(err, result) {
+    const user = result.rows[0]
+    if (err) throw err;
+      if (!user) {
+        callback('Authentication failed. User not found.')
+      } else {
+        bcrypt.compare(password, user.password, function(err, passwordValid){
+          if (passwordValid == false) {
+            callback('Authentication failed. Wrong password.');
+          } else {
+            var token = jwt.sign(user, config.secret, {
+              expiresIn: "1d" // expires in 24 hours
+            }); 
+            callback(null, token)
+          }
+        });
+      }
+  })
 }
 
 User.requireLogin = function(req, res, next) {
@@ -71,7 +70,7 @@ User.requireLogin = function(req, res, next) {
         message: 'No token provided.'
     });
   }
-};
+}
 
 User.fetchUser = function(query, callback) {
   db.query('SELECT name, email FROM dareity_user WHERE name=$1 OR email=$1', [query], function(err, result){
@@ -84,7 +83,7 @@ User.fetchUser = function(query, callback) {
       callback('No user found.')
     }
   })
-};
+}
 
 User.updateUser = function(query, id, callback) {
   let columns = ''
@@ -102,6 +101,16 @@ User.updateUser = function(query, id, callback) {
   })
 }
 
-
+User.deleteRecord = function(query, callback){
+  const {table_name, id} = query;
+  var queryString = `DELETE FROM ${table_name} WHERE id = ${id} RETURNING *`
+  db.query(queryString, function(err, result){
+    if(err){
+      callback('Sorry, please try again')
+    } else {
+      callback(null, 'Record deleted')
+    }
+  })
+}
 
 module.exports = User

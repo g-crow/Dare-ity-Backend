@@ -6,15 +6,21 @@ const config = require('./config');
 const jwt = require('jsonwebtoken');
 const User = require('./server/models/user');
 const Dare = require('./server/models/dare');
+<<<<<<< HEAD
+const Pledge = require('./server/models/pledge');
+const userController = require('./server/controllers/userController');
+const db = require('./db')
+const dareController = require('./server/controllers/dareController');
+const pledgeController = require('./server/controllers/pledgeController');
+=======
 const usercontroller = require('./server/controllers/userController');
 const db = require('./db')
 const darecontroller = require('./server/controllers/dareController');
+>>>>>>> eb7f129560b2e76b11464456187d00a1fcb3ec1b
 const { requireLogin } = require('./server/models/user');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
 app.use(morgan('dev'));
-
 
 //this initializes a connection db
 //it will keep idle connections open for 30 seconds
@@ -27,8 +33,12 @@ db.connect(function(err, result){
   console.log('Connected to DB')
 })
 
+<<<<<<< HEAD
+//API ROUTES
+=======
 
 //API Routes
+>>>>>>> eb7f129560b2e76b11464456187d00a1fcb3ec1b
 var apiRoutes = express.Router();
 
 app.get('/', function(req, res) {
@@ -38,11 +48,33 @@ app.get('/', function(req, res) {
 app.use('/api', apiRoutes);
 
 //USER ROUTES
-apiRoutes.post('/create_user', usercontroller.createuser);
-apiRoutes.post('/authenticate', usercontroller.authenticate);
-apiRoutes.post('/fetch_user', usercontroller.fetchUser); 
-apiRoutes.post('/update_user', usercontroller.updateUser);
+apiRoutes.post('/create_user', userController.createuser);
+apiRoutes.post('/authenticate', userController.authenticate);
+apiRoutes.post('/fetch_user', userController.fetchUser); 
+apiRoutes.post('/update_user', requireLogin, userController.updateUser);
 
+<<<<<<< HEAD
+//DARE ROUTES
+apiRoutes.post('/create_dare', requireLogin, dareController.createDare);
+apiRoutes.post('/fetch_dare', dareController.fetchDare);
+apiRoutes.post('/update_dare', requireLogin, dareController.updateDare);
+
+//USER_DARE ROUTES
+apiRoutes.post('/set_user_dare', requireLogin, dareController.setDare);
+apiRoutes.post('/fetch_user_dare', dareController.fetchUserDare);
+apiRoutes.post('/update_user_dare', requireLogin, dareController.updateUserDare);
+
+//PLEDGE ROUTES
+app.post("/save-stripe-token", pledgeController.createStripePledge);
+apiRoutes.post('/create_pledge', requireLogin, pledgeController.createPledge);
+apiRoutes.post('/fetch_pledge', pledgeController.fetchPledge);
+apiRoutes.post('/update_pledge', requireLogin, pledgeController.updatePledge);
+
+//DELETE ROUTES (one delete route for all DB records - table name, id column name, and record id must be provided)
+app.post('/api/delete_record', requireLogin, userController.deleteRecord);
+
+
+=======
 // dare routes
 apiRoutes.post('/create_dare', darecontroller.createDare);
 apiRoutes.post('/fetch_dare', darecontroller.fetchDare);
@@ -138,6 +170,7 @@ app.post('/api/delete_record', User.requireLogin, function(req, res){
   })
 })
 
+>>>>>>> eb7f129560b2e76b11464456187d00a1fcb3ec1b
 var server = app.listen(process.env.PORT || 3001);
 module.exports = server;
 console.log('magic');

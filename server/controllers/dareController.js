@@ -12,21 +12,19 @@ const createDare = function(req, res){
     dare.save((err, dare) => err ? res.status(500).json(err) : res.json(dare))
 }
 
-
 const fetchDare = function(req, res) {
- const { query } = req.body;
- Dare.fetchDare(query, (err, result) => {
-   if (err) {
-     res.status(400).json({success: false, message: err})
-   } else {
-     res.json({
-               success: true,
-               result: result
-             });
+  const { query } = req.body;
+  Dare.fetchDare(query, (err, result) => {
+    if (err) {
+      res.status(400).json({success: false, message: err})
+    } else {
+      res.json({
+                success: true,
+                result: result
+              });
    }
  })
 }
-
 
 const updateDare = function(req, res) {
  const id = req.body.id;
@@ -50,7 +48,7 @@ const setDare = function(req, res) {
       res.status(400).json({ success: false, message: err})
     } else {
       res.json({
-                success: true, 
+                success: true,
                 result: result
               });
     }
@@ -78,6 +76,5 @@ const updateUserDare = function(req, res) {
     }
   })
 }
-
 
 module.exports = { createDare, fetchDare, updateDare, setDare, fetchUserDare, updateUserDare };

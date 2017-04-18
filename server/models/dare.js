@@ -81,10 +81,18 @@ Dare.setDare = function(query, callback) {
   })
 }
 
+<<<<<<< HEAD
+//From the pledge table we need the sum of the pledge amount where dare_id is equal to the dare id input
+//Create function on front end to sum up all the values of pledge_amount for specific dare_id
+Dare.fetchUserDare = function(id, callback) {
+  const queryString = `SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = ${id}`
+  db.query(queryString, function(err, result) {
+=======
 Dare.fetchUserDare = function(query, callback) {
   const queryString = 'SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = $1 OR broadcaster_id = $1 OR dare_id = $1 OR npo_id = $1'
   db.query(queryString, [query], function(err, result) {
      const match = _.get(result, 'rows[0]')
+>>>>>>> eb7f129560b2e76b11464456187d00a1fcb3ec1b
     if (err) {
       callback(err.message)
     } else if (match) {
