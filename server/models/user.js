@@ -14,13 +14,8 @@ class User{
 	}
 
 	save(callback){
-<<<<<<< HEAD
 		if (!this.name || !this.password || !this.email){
 			callback(new Error('Please provide Name, password, and email'))
-=======
-		if (!this.name || !this.password || !this.profilepic_path){
-			callback(new Error('No Name or password provided'))
->>>>>>> 0e5f42c6718c44f62598d62283ac2f8c7f92fb17
 		} else {
 			const hashed_password = ''
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
