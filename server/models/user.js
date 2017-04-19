@@ -10,7 +10,7 @@ class User{
 		this.password = password;
 		this.email = email;
 		this.is_npo = is_npo;
-		this.profilePic_path = profilepic_path;
+		this.profilepic_path = profilepic_path;
 	}
 
 	save(callback){
