@@ -3,6 +3,8 @@ const config = require('../../config');
 const db = require('../../db');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+
+
 class User{
 	constructor(name, password, email, is_npo){
 		this.name = name;
@@ -10,7 +12,7 @@ class User{
 		this.email = email;
 		this.is_npo = is_npo;
 	}
-
+  
 	save(callback){
 		if (!this.name || !this.password){
 			callback(new Error('No Name or password provided'))
