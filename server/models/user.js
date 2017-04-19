@@ -11,17 +11,18 @@ class User{
 		this.password = password;
 		this.email = email;
 		this.is_npo = is_npo;
+		this.profilePic_path = profilePic_path;
 	}
-  
+
 	save(callback){
-		if (!this.name || !this.password){
-			callback(new Error('No Name or password provided'))
+		if (!this.name || !this.password || !email){
+			callback(new Error('Please provide Name, password, and email'))
 		} else {
 			const hashed_password = ''
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
 				if (!hashErr){
-					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo) 
-          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}) RETURNING *`
+					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo, profilePic_path)
+          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}), '${this.profilePic_path}' RETURNING *`
 					db.query(queryString, callback)
 				} else {
 					callback(hashErr)
@@ -45,7 +46,7 @@ User.authenticate = function(name, password, callback){
           } else {
             var token = jwt.sign(user, config.secret, {
               expiresIn: "1d" // expires in 24 hours
-            }); 
+            });
             callback(null, token)
           }
         });

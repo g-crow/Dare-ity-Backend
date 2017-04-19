@@ -14,7 +14,6 @@ const pledgeController = require('./server/controllers/pledgeController');
 const { requireLogin } = require('./server/models/user');
 const aws = require('aws-sdk');
 
-
 //This is for image upload
 app.set('views', './views');
 app.engine('html', require('ejs').renderFile);
@@ -47,7 +46,6 @@ app.get('/sign-s3', (req, res) => {
   });
 });
 
-
 //This is for stripe
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", '*');
@@ -55,7 +53,6 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
   next();
 });
-
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
