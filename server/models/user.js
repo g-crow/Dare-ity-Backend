@@ -14,7 +14,7 @@ class User{
 	}
 
 	save(callback){
-		if (!this.name || !this.password || !email){
+		if (!this.name || !this.password || !this.email){
 			callback(new Error('Please provide Name, password, and email'))
 		} else {
 			const hashed_password = ''
