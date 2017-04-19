@@ -21,7 +21,7 @@ class User{
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
 				if (!hashErr){
 					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo, profilepic_path)
-          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}, ${this.profilepic_path}) RETURNING *`
+          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}, '${this.profilepic_path}') RETURNING *`
 					db.query(queryString, callback)
 				} else {
 					callback(hashErr)
