@@ -58,6 +58,7 @@ app.use(function(req, res, next) {
   next();
 });
 
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
@@ -85,7 +86,7 @@ app.use('/api', apiRoutes);
 //USER ROUTES
 apiRoutes.post('/create_user', userController.createuser);
 apiRoutes.post('/authenticate', userController.authenticate);
-apiRoutes.post('/fetch_user', userController.fetchUser); 
+apiRoutes.post('/fetch_user', userController.fetchUser);
 apiRoutes.post('/update_user', requireLogin, userController.updateUser);
 
 //DARE ROUTES
@@ -107,8 +108,6 @@ apiRoutes.post('/update_pledge', requireLogin, pledgeController.updatePledge);
 //DELETE ROUTES (one delete route for all DB records - table name, id column name, and record id must be provided)
 app.post('/api/delete_record', requireLogin, userController.deleteRecord);
 
-
 var server = app.listen(process.env.PORT || 3001);
 module.exports = server;
 console.log('magic');
-
