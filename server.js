@@ -21,8 +21,6 @@ app.engine('html', require('ejs').renderFile);
 
 const S3_BUCKET = process.env.S3_BUCKET;
 
-app.get('/account', (req, res) => res.render('account.html'));
-
 app.get('/sign-s3', (req, res) => {
   const s3 = new aws.S3();
   const fileName = req.query['file-name'];
