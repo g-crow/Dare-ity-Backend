@@ -6,22 +6,23 @@ const _ = require('lodash');
 
 
 class User{
-	constructor(name, password, email, is_npo){
+	constructor(name, password, email, is_npo, profilePic_path){
 		this.name = name;
 		this.password = password;
 		this.email = email;
 		this.is_npo = is_npo;
+		this.profilePic_path
 	}
 
 	save(callback){
-		if (!this.name || !this.password){
+		if (!this.name || !this.password || !this.profilePic_path){
 			callback(new Error('No Name or password provided'))
 		} else {
 			const hashed_password = ''
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
 				if (!hashErr){
-					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo) 
-          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}) RETURNING *`
+					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo, profilePic_path)
+          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}, ${this.profilePic_path}) RETURNING *`
 					db.query(queryString, callback)
 				} else {
 					callback(hashErr)

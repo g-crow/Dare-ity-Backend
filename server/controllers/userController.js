@@ -6,9 +6,10 @@ const createuser = function(req, res){
           name,
           password,
           email,
-          is_npo
+          is_npo,
+          profilePic_path
         } = req.body;
-  var user = new User(name, password, email, is_npo)
+  var user = new User(name, password, email, is_npo, profilePic_path)
   user.save((err, user)=> err ? res.status(500).json(err) : res.json(user.rows[0]))
 }
 
