@@ -11,18 +11,18 @@ class User{
 		this.password = password;
 		this.email = email;
 		this.is_npo = is_npo;
-		this.profilePic_path
+		this.profilePic_path = profilepic_path;
 	}
 
 	save(callback){
-		if (!this.name || !this.password || !this.profilePic_path){
+		if (!this.name || !this.password || !this.profilepic_path){
 			callback(new Error('No Name or password provided'))
 		} else {
 			const hashed_password = ''
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
 				if (!hashErr){
-					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo, profilePic_path)
-          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}, ${this.profilePic_path}) RETURNING *`
+					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo, profilepic_path)
+          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}, ${this.profilepic_path}) RETURNING *`
 					db.query(queryString, callback)
 				} else {
 					callback(hashErr)
