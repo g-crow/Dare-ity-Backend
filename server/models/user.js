@@ -4,7 +4,6 @@ const db = require('../../db');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 
-
 class User{
 	constructor(name, password, email, is_npo){
 		this.name = name;
