@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 
 class User{
-	constructor(name, password, email, is_npo, profilePic_path){
+	constructor(name, password, email, is_npo, profilepic_path){
 		this.name = name;
 		this.password = password;
 		this.email = email;
