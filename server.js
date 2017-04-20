@@ -18,7 +18,7 @@ const aws = require('aws-sdk');
 app.set('views', './views');
 app.engine('html', require('ejs').renderFile);
 
-const S3_BUCKET = process.env.S3_BUCKET;
+const S3_BUCKET = process.env.S3_BUCKET_NAME;
 
 //This is for stripe
 app.use(function(req, res, next) {
