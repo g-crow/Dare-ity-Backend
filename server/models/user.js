@@ -6,12 +6,12 @@ const _ = require('lodash');
 
 
 class User{
-	constructor(name, password, email, is_npo, profilePic_path){
+	constructor(name, password, email, is_npo, profilepic_path){
 		this.name = name;
 		this.password = password;
 		this.email = email;
 		this.is_npo = is_npo;
-		this.profilePic_path = profilepic_path;
+		this.profilepic_path = profilepic_path;
 	}
 
 	save(callback){
@@ -22,7 +22,7 @@ class User{
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
 				if (!hashErr){
 					const queryString = `INSERT INTO dareity_user (name, password, email, is_npo, profilepic_path)
-          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}, ${this.profilepic_path}) RETURNING *`
+          VALUES ('${this.name}', '${hashed_password}', '${this.email}', ${this.is_npo}, '${this.profilepic_path}') RETURNING *`
 					db.query(queryString, callback)
 				} else {
 					callback(hashErr)

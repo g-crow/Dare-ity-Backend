@@ -21,7 +21,7 @@ const getTokenForTest = function(server, callback){
 const createUserForDelete = function(server, callback){
 	chai.request(server)
 	.post('/api/create_user')
-	.send({'name': uniqueName+Math.floor(Math.random() * 1000), 'password': 'abc', 'email': "bob.abc@gmail.com", 'is_npo': true})
+	.send({'name': uniqueName+Math.floor(Math.random() * 1000), 'password': 'abc', 'email': "bob.abc@gmail.com", 'is_npo': true, 'profilepic_path': 'someurl'})
 	.end((err, res) => {
 		if(err){
 			callback(err)
@@ -51,7 +51,7 @@ describe('POST /api/create_user', function() {
 	it('should return NPO user object', function(done){
 		chai.request(server)
 		.post('/api/create_user')
-		.send({'name': uniqueName, 'password': 'abc', 'email': "bob.abc@gmail.com", 'is_npo': true})
+		.send({'name': uniqueName, 'password': 'abc', 'email': "bob.abc@gmail.com", 'is_npo': true, 'profilepic_path': 'someurl' })
 		.end(function(err,res){
 			res.body.should.be.a('object');
 			res.body.should.have.property('name');
