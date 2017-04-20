@@ -14,7 +14,7 @@ const createuser = function(req, res){
 }
 
 const authenticate = function(req, res) {
-  const { name, password} = req.body;
+  const { name, password } = req.body;
   User.authenticate(name, password, (err, token) => {
     if (err){
       res.status(400).json({success: false, message: err})
