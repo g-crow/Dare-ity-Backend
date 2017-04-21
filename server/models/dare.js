@@ -2,12 +2,13 @@ const db = require('../../db');
 const _ = require('lodash');
 
 class Dare{
-	constructor(title, description, npo_creator, expiration, pledge_threshold){
+	constructor(title, description, npo_creator, expiration, pledge_threshold, video_path){
 		this.title = title;
 		this.description = description;
 		this.npo_creator = npo_creator;
 		this.expiration = expiration;
 		this.pledge_threshold = pledge_threshold;
+		this.video_path = video_path;
 	}
 
 	save(callback){
@@ -102,6 +103,7 @@ Dare.updateUserDare = function(query, callback) {
   if (query.npo_id) columns += `npo_id = ${query.npo_id}, `
   if (query.pledge_amount_threshold) columns += `pledge_amount_threshold = ${query.pledge_amount_threshold}, `
   if (query.pledge_status) columns += `pledge_status = ${query.pledge_status}, `
+	if (query.video_path) columns += `video_path = '${query.video_path}', `
   columns = columns.replace(/, $/, '')
   const queryString = `UPDATE user_dare SET ${columns} WHERE id = ${query.id}`
   db.query(queryString, function(err, result) {
