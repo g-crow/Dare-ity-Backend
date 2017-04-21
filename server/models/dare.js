@@ -111,7 +111,7 @@ Dare.fetchUserDare = function(query, callback) {
   })
 }
 
-Dare.fetchAllUserDares = function(query, callback) {
+Dare.fetchAllUserDares = function(broadcaster_id, callback) {
  const queryString = `SELECT * from user_dare WHERE broadcaster_id' = ${query.broadcaster_id}`
  db.query(queryString, function(err, result) {
    const dares = result.rows
