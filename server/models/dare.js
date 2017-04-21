@@ -111,6 +111,20 @@ Dare.fetchUserDare = function(query, callback) {
   })
 }
 
+Dare.fetchAllUserDares = function(query, callback) {
+ const queryString = `SELECT * from user_dare WHERE broadcaster_id' = ${query.broadcaster_id}`
+ db.query(queryString, function(err, result) {
+   const dares = result.rows
+   if (err) {
+     callback(err.message)
+   } else if (result) {
+     callback(null, dares)
+   } else {
+     callback('No dare found.')
+   }
+ })
+}
+
 Dare.updateUserDare = function(query, callback) {
   let columns = ''
   if (query.broadcaster_id) columns += `broadcaster_id = ${query.broadcaster_id}, `
