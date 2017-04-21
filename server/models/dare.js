@@ -115,7 +115,7 @@ Dare.fetchAllUserDares = function(query, callback) {
  const queryString = `SELECT * from user_dare WHERE broadcaster_id' = ${query.broadcaster_id}`
  db.query(queryString, function(err, result) {
 	 console.log(result);
-   const match = _.get(result, rows)
+   const match = _.get(result, 'rows')
    if (err) {
      callback(err.message)
    } else if (match) {
