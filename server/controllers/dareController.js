@@ -81,6 +81,7 @@ const fetchUserDare = function(req, res) {
 }
 
 const fetchAllUserDares = function(req, res) {
+	console.log(req);
   const { query } = req.body.broadcaster_id;
   Dare.fetchAllUserDares(query, (err, result) => {
     if (err) {
