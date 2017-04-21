@@ -2,12 +2,13 @@ const db = require('../../db');
 const _ = require('lodash');
 
 class Dare{
-	constructor(title, description, npo_creator, expiration, pledge_threshold){
+	constructor(title, description, npo_creator, expiration, pledge_threshold, video_path){
 		this.title = title;
 		this.description = description;
 		this.npo_creator = npo_creator;
 		this.expiration = expiration;
 		this.pledge_threshold = pledge_threshold;
+		this.video_path = video_path;
 	}
 
 	save(callback){
@@ -42,6 +43,20 @@ Dare.fetchDare = function(query, callback) {
  })
 }
 
+Dare.fetchAllDares = function(query, callback) {
+ const queryString = 'SELECT * from dare'
+ db.query(queryString, function(err, result) {
+   const dares = result.rows
+   if (err) {
+     callback(err.message)
+   } else if (result) {
+     callback(null, dares)
+   } else {
+     callback('No dare found.')
+   }
+ })
+}
+
 
 Dare.updateDare = function(query, id, callback) {
  let columns = ''
@@ -66,7 +81,8 @@ Dare.setDare = function(query, callback) {
   			broadcaster_id,
   			dare_id,
   			npo_id,
-  			pledge_amount_threshold
+  			pledge_amount_threshold,
+				video_path,
   		} = query;
   if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined || pledge_amount_threshold === undefined) {
     callback('Please set all required parameters.')
@@ -102,6 +118,7 @@ Dare.updateUserDare = function(query, callback) {
   if (query.npo_id) columns += `npo_id = ${query.npo_id}, `
   if (query.pledge_amount_threshold) columns += `pledge_amount_threshold = ${query.pledge_amount_threshold}, `
   if (query.pledge_status) columns += `pledge_status = ${query.pledge_status}, `
+	if (query.video_path) columns += `video_path = '${query.video_path}', `
   columns = columns.replace(/, $/, '')
   const queryString = `UPDATE user_dare SET ${columns} WHERE id = ${query.id}`
   db.query(queryString, function(err, result) {

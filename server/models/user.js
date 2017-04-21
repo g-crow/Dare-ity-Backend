@@ -76,12 +76,25 @@ User.requireLogin = function(req, res, next) {
 }
 
 User.fetchUser = function(query, callback) {
-  db.query('SELECT name, email FROM dareity_user WHERE name=$1 OR email=$1', [query], function(err, result){
+  db.query('SELECT * FROM dareity_user WHERE name=$1 OR email=$1', [query], function(err, result){
     const user = _.get(result, 'rows[0]')
     if (err){
       callback(err.message)
     } else if (user) {
       callback(null, user)
+    } else {
+      callback('No user found.')
+    }
+  })
+}
+
+User.fetchAllUsers = function(query, callback) {
+  db.query('SELECT * FROM dareity_user', function(err, result){
+    const users = (result.rows)
+    if (err){
+      callback(err.message)
+    } else if (result) {
+      callback(null, users)
     } else {
       callback('No user found.')
     }
