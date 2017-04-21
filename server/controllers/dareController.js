@@ -7,9 +7,8 @@ const createDare = function(req, res){
 			npo_creator,
 			expiration,
 			pledge_threshold,
-			video_path
 		  } = req.body;
-	var dare = new Dare(title, description, npo_creator, expiration, pledge_threshold, video_path)
+	var dare = new Dare(title, description, npo_creator, expiration, pledge_threshold)
     dare.save((err, dare) => err ? res.status(500).json(err) : res.json(dare))
 }
 

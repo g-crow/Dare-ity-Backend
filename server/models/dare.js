@@ -81,7 +81,8 @@ Dare.setDare = function(query, callback) {
   			broadcaster_id,
   			dare_id,
   			npo_id,
-  			pledge_amount_threshold
+  			pledge_amount_threshold,
+				video_path,
   		} = query;
   if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined || pledge_amount_threshold === undefined) {
     callback('Please set all required parameters.')
