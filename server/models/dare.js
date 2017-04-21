@@ -42,6 +42,20 @@ Dare.fetchDare = function(query, callback) {
  })
 }
 
+Dare.fetchAllDares = function(query, callback) {
+ const queryString = 'SELECT * from dare'
+ db.query(queryString, function(err, result) {
+   const dares = result.rows
+   if (err) {
+     callback(err.message)
+   } else if (result) {
+     callback(null, dares)
+   } else {
+     callback('No dare found.')
+   }
+ })
+}
+
 
 Dare.updateDare = function(query, id, callback) {
  let columns = ''

@@ -42,6 +42,20 @@ const fetchUser = function(req, res) {
   })
 }
 
+const fetchAllUsers = function(req, res) {
+  const { query } = req.body;
+  User.fetchAllUsers(query, (err, result) => {
+    if (err){
+      res.status(400).json({success: false, message: err})
+    } else {
+      res.json({
+                success: true,
+                result: result
+              });
+    }
+  })
+}
+
 const updateUser = function(req, res) {
   const id = req.body.id;
   const query = req.body;
@@ -71,4 +85,4 @@ const deleteRecord = function(req, res){
   })
 }
 
-module.exports = { createuser, authenticate, fetchUser, updateUser, deleteRecord }
+module.exports = { createuser, authenticate, fetchUser, fetchAllUsers, updateUser, deleteRecord }

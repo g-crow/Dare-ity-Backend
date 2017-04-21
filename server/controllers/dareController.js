@@ -26,6 +26,20 @@ const fetchDare = function(req, res) {
  })
 }
 
+const fetchAllDares = function(req, res) {
+  const { query } = req.body;
+  Dare.fetchAllDares(query, (err, result) => {
+    if (err) {
+      res.status(400).json({success: false, message: err})
+    } else {
+      res.json({
+                success: true,
+                result: result
+              });
+   }
+ })
+}
+
 const updateDare = function(req, res) {
  const id = req.body.id;
  const query = req.body;
@@ -77,4 +91,4 @@ const updateUserDare = function(req, res) {
   })
 }
 
-module.exports = { createDare, fetchDare, updateDare, setDare, fetchUserDare, updateUserDare };
+module.exports = { createDare, fetchDare, fetchAllDares, updateDare, setDare, fetchUserDare, updateUserDare };
