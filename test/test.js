@@ -83,6 +83,27 @@ describe('POST /api/fetch_user', function(){
 	})
 })
 
+describe('POST /api/fetch_all_users', function(){
+	it('should get all users in database', function(done){
+		chai.request(server)
+		.post('/api/fetch_all_users')
+		.end(function(err, res){
+			res.body.should.be.a('object');
+			res.body.should.have.a.property('success');
+			res.body.should.have.a.property('result');
+			res.body.result.should.be.a('array')
+			res.body.result[0].should.be.a('object')
+			res.body.result[0].should.have.a.property('id')
+			res.body.result[0].should.have.a.property('name')
+			res.body.result[0].should.have.a.property('password')
+			res.body.result[0].should.have.a.property('is_npo')
+			res.body.result[0].should.have.a.property('email')
+			res.body.result[0].should.have.a.property('profilepic_path')
+			done();
+		})
+	})
+})
+
 describe('POST /api/update_user', function() {
 	it('should update a users information', function(done) {
 		createUserForDelete(server,(err, userId)=> {
@@ -534,7 +555,7 @@ describe('POST /api/delete_record', function() {
 			getTokenForTest(server, (err, token)=>{
 				chai.request(server)
 				.post('/api/delete_record')
-				.send({'table_name': 'dareity_user', 'id': 1, 'token': token})
+				.send({'table_name': 'dareity_user', 'id': userId, 'token': token})
 				.end(function(err,res){
 					res.body.should.be.a('object')
 					res.body.should.have.property('success');
