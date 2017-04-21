@@ -43,6 +43,20 @@ Dare.fetchDare = function(query, callback) {
  })
 }
 
+Dare.fetchAllDares = function(query, callback) {
+ const queryString = 'SELECT * from dare'
+ db.query(queryString, function(err, result) {
+   const dares = result.rows
+   if (err) {
+     callback(err.message)
+   } else if (result) {
+     callback(null, dares)
+   } else {
+     callback('No dare found.')
+   }
+ })
+}
+
 
 Dare.updateDare = function(query, id, callback) {
  let columns = ''
@@ -67,7 +81,8 @@ Dare.setDare = function(query, callback) {
   			broadcaster_id,
   			dare_id,
   			npo_id,
-  			pledge_amount_threshold
+  			pledge_amount_threshold,
+				video_path,
   		} = query;
   if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined || pledge_amount_threshold === undefined) {
     callback('Please set all required parameters.')

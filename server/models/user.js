@@ -87,6 +87,19 @@ User.fetchUser = function(query, callback) {
   })
 }
 
+User.fetchAllUsers = function(query, callback) {
+  db.query('SELECT * FROM dareity_user', function(err, result){
+    const users = (result.rows)
+    if (err){
+      callback(err.message)
+    } else if (result) {
+      callback(null, users)
+    } else {
+      callback('No user found.')
+    }
+  })
+}
+
 User.updateUser = function(query, id, callback) {
   let columns = ''
   if (query.is_npo) columns += `is_npo = ${query.is_npo}, `
