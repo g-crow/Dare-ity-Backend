@@ -69,7 +69,7 @@ Dare.updateDare = function(query, id, callback) {
  const queryString = `UPDATE dare SET ${columns} WHERE id = ${id}`
  db.query(queryString, function(err, result) {
    if (err) {
-     callback('Sorry, please try again')
+     callback('Sorry, please try again', err)
    } else {
      callback(null, 'Dare info updated.')
    }
