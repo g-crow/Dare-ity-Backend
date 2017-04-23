@@ -113,7 +113,7 @@ Dare.fetchUserDare = function(query, callback) {
 
 Dare.fetchAllUserDares = function(query, callback) {
 console.log(query, '!!!!!!!!!!!!!!!!!!!!!!!!!!');
- const queryString = `SELECT * from user_dare WHERE broadcaster_id = ${query.broadcaster_id}`
+ const queryString = `SELECT * from user_dare`
  db.query(queryString, function(err, result) {
 	 console.log(result);
    const match = _.get(result, 'rows')
@@ -126,6 +126,22 @@ console.log(query, '!!!!!!!!!!!!!!!!!!!!!!!!!!');
    }
  })
 }
+//
+// Dare.fetchAllUserDares = function(query, callback) {
+// console.log(query, '!!!!!!!!!!!!!!!!!!!!!!!!!!');
+//  const queryString = `SELECT * from user_dare WHERE broadcaster_id = ${query.broadcaster_id}`
+//  db.query(queryString, function(err, result) {
+// 	 console.log(result);
+//    const match = _.get(result, 'rows')
+//    if (err) {
+//      callback(err.message)
+//    } else if (match) {
+//      callback(null, match)
+//    } else {
+//      callback('No dares found.')
+//    }
+//  })
+// }
 
 Dare.updateUserDare = function(query, callback) {
   let columns = ''
