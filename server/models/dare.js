@@ -83,6 +83,7 @@ Dare.setDare = function(query, callback) {
   			npo_id,
   			pledge_amount_threshold,
 				video_path,
+				mobile_video,
   		} = query;
   if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined || pledge_amount_threshold === undefined) {
     callback('Please set all required parameters.')
@@ -151,6 +152,7 @@ Dare.updateUserDare = function(query, callback) {
   if (query.pledge_amount_threshold) columns += `pledge_amount_threshold = ${query.pledge_amount_threshold}, `
   if (query.pledge_status) columns += `pledge_status = ${query.pledge_status}, `
 	if (query.video_path) columns += `video_path = '${query.video_path}', `
+	if (query.mobile_video) columns += `mobile_video = '${query.mobile_video}', `
   columns = columns.replace(/, $/, '')
   const queryString = `UPDATE user_dare SET ${columns} WHERE id = ${query.id}`
   db.query(queryString, function(err, result) {
