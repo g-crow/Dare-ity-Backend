@@ -23,7 +23,9 @@ const authenticate = function(req, res) {
       res.json({
                 success: true,
                 message: 'Please have a token!',
-                token: token
+                token: token,
+                is_npo: is_npo,
+                profilepic_path: profilepic_path
               });
     }
   })
