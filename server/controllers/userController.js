@@ -1,6 +1,5 @@
 const User = require('../models/user');
 
-
 const createuser = function(req, res){
   const {
           name,
