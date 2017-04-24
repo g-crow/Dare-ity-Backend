@@ -16,17 +16,13 @@ const createuser = function(req, res){
 
 const authenticate = function(req, res) {
   const { name, password } = req.body;
-  User.authenticate(name, password, (err, token) => {
+  User.authenticate(name, password, (err, userData) => {
     if (err){
       res.status(400).json({success: false, message: err})
     } else {
-      res.json({
-                success: true,
-                message: 'Please have a token!',
-                token: token,
-                is_npo: is_npo,
-                profilepic_path: profilepic_path
-              });
+      res.json(Object.assign({
+                success: true
+              }, userData );
     }
   })
 }

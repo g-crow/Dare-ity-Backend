@@ -47,7 +47,8 @@ User.authenticate = function(name, password, callback){
             var token = jwt.sign(user, config.secret, {
               expiresIn: "1d" // expires in 24 hours
             });
-            callback(null, token)
+						const {is_npo, name, profilepic_path} = user;
+            callback(null, { token, is_npo, name, profilepic_path})
           }
         });
       }
