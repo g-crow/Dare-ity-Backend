@@ -33,7 +33,7 @@ class User{
 }
 
 User.authenticate = function(name, password, callback){
-  db.query(`SELECT name, id, is_npo, password FROM dareity_user WHERE name = '${name}'`,
+  db.query(`SELECT name, id, is_npo, password, profilepic_path FROM dareity_user WHERE name = '${name}'`,
   function(err, result) {
     const user = result.rows[0]
     if (err) throw err;
