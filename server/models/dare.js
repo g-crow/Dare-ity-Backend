@@ -114,7 +114,7 @@ Dare.fetchUserDare = function(query, callback) {
 
 Dare.fetchAllUserDares = function(query, callback) {
 console.log(query, '!!!!!!!!!!!!!!!!!!!!!!!!!!');
- const queryString = `SELECT * from user_dare`
+ const queryString = `SELECT * from user_dare join dare on user_dare.dare_id = dare.id join dareity_user on user_dare.broadcaster_id=dareity_user.id`
  db.query(queryString, function(err, result) {
 	 console.log(result);
    const match = _.get(result, 'rows')
