@@ -87,7 +87,7 @@ Dare.setDare = function(query, callback) {
   if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined || pledge_amount_threshold === undefined) {
     callback('Please set all required parameters.')
   }
-  const queryString = `INSERT INTO user_dare (broadcaster_id, dare_id, npo_id, pledge_amount_threshold, video_path) VALUES (${broadcaster_id}, ${dare_id}, ${npo_id}, ${pledge_amount_threshold}, ${video_path})`
+  const queryString = `INSERT INTO user_dare (broadcaster_id, dare_id, pledge_amount_threshold, video_path) VALUES (${broadcaster_id}, ${dare_id}, ${pledge_amount_threshold}, ${video_path})`
   db.query(queryString, function(err, result) {
     if (err) {
       callback(err.message)
