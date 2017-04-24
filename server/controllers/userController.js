@@ -22,7 +22,7 @@ const authenticate = function(req, res) {
     } else {
       res.json(Object.assign({
                 success: true
-              }, userData );
+              }, userData ));
     }
   })
 }
