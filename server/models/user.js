@@ -89,8 +89,11 @@ User.fetchUser = function(query, callback) {
   })
 }
 
+
+
+
 User.fetchAllUsers = function(query, callback) {
-  db.query('SELECT dareity_user.id AS userId, * FROM dareity_user LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id', function(err, result){
+  db.query('SELECT dareity_user.id AS userId, * FROM dareity_user LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id LEFT JOIN dare ON user_dare.dare_id = dare.id', function(err, result){
     const rows = (result.rows)
 		const users = {}
     if (err){
@@ -103,7 +106,11 @@ User.fetchAllUsers = function(query, callback) {
 														pledge_amount_threshold: row.pledge_amount_threshold,
 														npo_id: row.npo_id,
 														video_path: row.video_path,
-														dare_id: row.dare_id
+														dare_id: row.dare_id,
+														title: row.title,
+														description: row.description,
+														total_pledge_amount: row.total_pledge_amount,
+														image_path: row.image_path
 													}))
 			const users = rows.reduce((users, row) => {
 				users[row.name] = {
