@@ -94,7 +94,20 @@ User.fetchUser = function(query, callback) {
 
 User.fetchAllUsers = function(query, callback) {
   db.query(
-		`SELECT dareity_user.id AS userId, npo.name AS npoName, * FROM dareity_user
+		`SELECT dareity_user.id AS userId, 
+						dareity_user.is_npo,
+						dareity_user.name,
+						dareity_user.email,
+						dareity_user.profilepic_path,
+						dareity_user.bio,
+						dare.id as dareId,
+						dare.title,
+						dare.image_path,
+						dare.description,
+						user_dare.video_path,
+						npo.name AS npoName,
+						npo.id AS npoId
+		 FROM dareity_user
 				LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id
 				LEFT JOIN dare ON user_dare.dare_id = dare.id
 				LEFT JOIN dareity_user AS npo ON dare.npo_creator = npo.id`,
@@ -108,13 +121,11 @@ User.fetchAllUsers = function(query, callback) {
 														  .map((row) => ({
 																userId: row.userId,
 																user: row.name,
-																pledge_amount_threshold: row.pledge_amount_threshold,
-																npo_id: row.npo_id,
+																npo_id: row.npo_npoId,
 																video_path: row.video_path,
-																dare_id: row.dare_id,
+																dare_id: row.dareId,
 																title: row.title,
 																description: row.description,
-																total_pledge_amount: row.total_pledge_amount,
 																image_path: row.image_path,
 																npo_name: row.npoName
 															}))
