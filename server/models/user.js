@@ -116,6 +116,7 @@ User.fetchAllUsers = function(query, callback) {
 				}
 				return users
 			}, {})
+			console.log('testing fetch all users route', dares, users)
 			dares.forEach(dare => users[dare.user].dares.push(dare))
       callback(null, _.values(users))
     } else {
