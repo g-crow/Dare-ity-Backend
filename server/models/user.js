@@ -117,7 +117,7 @@ User.fetchAllUsers = function(query, callback) {
 		    if (err){
 		      callback(err.message)
 		    } else if (result){
-					const dares =  rows.filter((row) => row.video_path)
+					const dares =  rows.filter((row) => row.dareId)
 														  .map((row) => ({
 																userId: row.userId,
 																user: row.name,
