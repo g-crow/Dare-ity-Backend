@@ -90,7 +90,7 @@ User.fetchUser = function(query, callback) {
 }
 
 User.fetchAllUsers = function(query, callback) {
-  db.query('SELECT * FROM dareity_user LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id', function(err, result){
+  db.query('SELECT dareity_user.id AS userId, * FROM dareity_user LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id', function(err, result){
     const rows = (result.rows)
 		const users = {}
     if (err){
@@ -99,6 +99,7 @@ User.fetchAllUsers = function(query, callback) {
 			console.log('rows', rows)
 			const dares =  rows.filter((row) => row.pledge_amount_threshold)
 												  .map((row) => ({
+														userId: userId,
 														user: row.name,
 														pledge_amount_threshold: row.pledge_amount_threshold,
 														npo_id: row.npo_id,
