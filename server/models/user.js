@@ -93,7 +93,7 @@ User.fetchUser = function(query, callback) {
 
 
 User.fetchAllUsers = function(query, callback) {
-  db.query('SELECT dareity_user.id AS userId, * FROM dareity_user LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id LEFT JOIN dare ON user_dare.dare_id = dare.id', function(err, result){
+  db.query('SELECT dareity_user.id AS userId, npo.name AS npoName, * FROM dareity_user LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id LEFT JOIN dare ON user_dare.dare_id = dare.id LEFT JOIN dareity_user AS npo ON dare.npo_creator = npo.id', function(err, result){
     const rows = (result.rows)
 		const users = {}
     if (err){
