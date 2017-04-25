@@ -99,7 +99,7 @@ User.fetchAllUsers = function(query, callback) {
 			console.log('rows', rows)
 			const dares =  rows.filter((row) => row.pledge_amount_threshold)
 												  .map((row) => ({
-														userId: userId,
+														userId: row.userId,
 														user: row.name,
 														pledge_amount_threshold: row.pledge_amount_threshold,
 														npo_id: row.npo_id,
