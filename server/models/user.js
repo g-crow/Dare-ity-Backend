@@ -90,23 +90,21 @@ User.fetchUser = function(query, callback) {
 }
 
 
-
-
 User.fetchAllUsers = function(query, callback) {
   db.query(
-		`SELECT dareity_user.id AS userId,
+		`SELECT dareity_user.id AS user_id,
 						dareity_user.is_npo,
 						dareity_user.name,
 						dareity_user.email,
 						dareity_user.profilepic_path,
 						dareity_user.bio,
-						dare.id as dareId,
+						dare.id as dare_id,
 						dare.title,
 						dare.image_path,
 						dare.description,
 						user_dare.video_path,
-						npo.name AS npoName,
-						npo.id AS npoId
+						npo.name AS npo_name,
+						npo.id AS npo_id
 		 FROM dareity_user
 				LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id
 				LEFT JOIN dare ON user_dare.dare_id = dare.id
@@ -120,19 +118,19 @@ User.fetchAllUsers = function(query, callback) {
 		    } else if (result){
 					const dares =  rows.filter((row) => row.dareId)
 														  .map((row) => ({
-																userId: row.userId,
+																userId: row.user_id,
 																user: row.name,
-																npo_id: row.npo_npoId,
+																npo_id: row.npo_id,
 																video_path: row.video_path,
-																dare_id: row.dareId,
+																dare_id: row.dare_id,
 																title: row.title,
 																description: row.description,
 																image_path: row.image_path,
-																npo_name: row.npoName
+																npo_name: row.npo_name
 															}))
 					const users = rows.reduce((users, row) => {
 						users[row.name] = {
-							id: row.userId,
+							id: row.user_id,
 							name: row.name,
 							is_npo: row.is_npo,
 							email: row.email,
