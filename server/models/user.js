@@ -94,7 +94,7 @@ User.fetchUser = function(query, callback) {
 
 User.fetchAllUsers = function(query, callback) {
   db.query(
-		`SELECT dareity_user.id AS userId, 
+		`SELECT dareity_user.id AS userId,
 						dareity_user.is_npo,
 						dareity_user.name,
 						dareity_user.email,
@@ -117,7 +117,7 @@ User.fetchAllUsers = function(query, callback) {
 		    if (err){
 		      callback(err.message)
 		    } else if (result){
-					const dares =  rows.filter((row) => row.pledge_amount_threshold)
+					const dares =  rows.filter((row) => row.video_path)
 														  .map((row) => ({
 																userId: row.userId,
 																user: row.name,
