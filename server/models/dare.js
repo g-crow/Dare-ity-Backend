@@ -83,13 +83,12 @@ Dare.setDare = function(query, callback) {
   			npo_id,
   			pledge_amount_threshold,
 				video_path,
-				mobile_video,
   		} = query;
   if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined || pledge_amount_threshold === undefined) {
     callback('Please set all required parameters.')
   }
-  const queryString = `INSERT INTO user_dare (broadcaster_id, dare_id, npo_id, pledge_amount_threshold) VALUES (${broadcaster_id}, ${dare_id}, ${npo_id}, ${pledge_amount_threshold})`
-  db.query(queryString, function(err, result) {
+  const queryString = `INSERT INTO user_dare (broadcaster_id, dare_id, npo_id, pledge_amount_threshold, video_path) VALUES ($1, $2, $3, $4, $5)`
+  db.query(queryString,[broadcaster_id, dare_id, npo_id, pledge_amount_threshold, video_path], function(err, result) {
     if (err) {
       callback(err.message)
     } else {
@@ -114,7 +113,7 @@ Dare.fetchUserDare = function(query, callback) {
 
 Dare.fetchAllUserDares = function(query, callback) {
 console.log(query, '!!!!!!!!!!!!!!!!!!!!!!!!!!');
- const queryString = `SELECT * from user_dare join dare on user_dare.dare_id = dare.id join dareity_user on user_dare.broadcaster_id=dareity_user.id`
+ const queryString = `SELECT * FROM user_dare JOIN dare ON user_dare.dare_id = dare.id JOIN dareity_user ON user_dare.broadcaster_id=dareity_user.id`
  db.query(queryString, function(err, result) {
 	 console.log(result);
    const match = _.get(result, 'rows')
