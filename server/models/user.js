@@ -96,16 +96,17 @@ User.fetchAllUsers = function(query, callback) {
     if (err){
       callback(err.message)
     } else if (result){
+			console.log('rows', rows)
 			const dares =  rows.filter((row) => row.pledge_amount_threshold)
 												  .map((row) => ({
-														user: row.broadcaster_id,
+														user: row.name,
 														pledge_amount_threshold: row.pledge_amount_threshold,
 														npo_id: row.npo_id,
 														video_path: row.video_path,
 														dare_id: row.dare_id
 													}))
 			const users = rows.reduce((users, row) => {
-				users[row.id] = {
+				users[row.name] = {
 					id: row.id,
 					name: row.name,
 					is_npo: row.is_npo,
