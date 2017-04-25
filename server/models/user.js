@@ -96,7 +96,6 @@ User.fetchAllUsers = function(query, callback) {
     if (err){
       callback(err.message)
     } else if (result){
-			console.log('rows', rows)
 			const dares =  rows.filter((row) => row.pledge_amount_threshold)
 												  .map((row) => ({
 														userId: row.userId,
@@ -108,7 +107,7 @@ User.fetchAllUsers = function(query, callback) {
 													}))
 			const users = rows.reduce((users, row) => {
 				users[row.name] = {
-					id: row.id,
+					id: row.userId,
 					name: row.name,
 					is_npo: row.is_npo,
 					email: row.email,
@@ -118,7 +117,6 @@ User.fetchAllUsers = function(query, callback) {
 				}
 				return users
 			}, {})
-			console.log('testing fetch all users route', dares, users)
 			dares.forEach(dare => users[dare.user].dares.push(dare))
       callback(null, _.values(users))
     } else {
