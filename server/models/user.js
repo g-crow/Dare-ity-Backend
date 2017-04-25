@@ -113,6 +113,7 @@ User.fetchAllUsers = function(query, callback) {
 				LEFT JOIN dareity_user AS npo ON dare.npo_creator = npo.id`,
 		function(err, result){
 		    const rows = (result.rows)
+				console.log('rows', rows)
 				const users = {}
 		    if (err){
 		      callback(err.message)
@@ -141,6 +142,7 @@ User.fetchAllUsers = function(query, callback) {
 						}
 						return users
 					}, {})
+					console.log('dares', dares)
 					dares.forEach(dare => users[dare.user].dares.push(dare))
 		      callback(null, _.values(users))
 		    } else {
