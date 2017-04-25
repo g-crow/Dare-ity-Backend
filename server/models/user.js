@@ -92,45 +92,50 @@ User.fetchUser = function(query, callback) {
 
 
 
-User.fetchAllUsers = function(query, callback) {
-  db.query('SELECT dareity_user.id AS userId, npo.name AS npoName, * FROM dareity_user LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id LEFT JOIN dare ON user_dare.dare_id = dare.id LEFT JOIN dareity_user AS npo ON dare.npo_creator = npo.id', function(err, result){
-    const rows = (result.rows)
-		const users = {}
-    if (err){
-      callback(err.message)
-    } else if (result){
-			const dares =  rows.filter((row) => row.pledge_amount_threshold)
-												  .map((row) => ({
-														userId: row.userId,
-														user: row.name,
-														pledge_amount_threshold: row.pledge_amount_threshold,
-														npo_id: row.npo_id,
-														video_path: row.video_path,
-														dare_id: row.dare_id,
-														title: row.title,
-														description: row.description,
-														total_pledge_amount: row.total_pledge_amount,
-														image_path: row.image_path,
-														npo_name: row.name(2)
-													}))
-			const users = rows.reduce((users, row) => {
-				users[row.name] = {
-					id: row.userId,
-					name: row.name,
-					is_npo: row.is_npo,
-					email: row.email,
-					profilepic_path: row.profilepic_path,
-					bio: row.bio,
-					dares: []
-				}
-				return users
-			}, {})
-			dares.forEach(dare => users[dare.user].dares.push(dare))
-      callback(null, _.values(users))
-    } else {
-      callback('No user found.')
-    }
-  })
+User.fetchAllsers = function(query, callback) {
+  db.query(
+		`SELECT dareity_user.id AS userId, npo.name AS npoName, * FROM dareity_user
+				LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id
+				LEFT JOIN dare ON user_dare.dare_id = dare.id
+				LEFT JOIN dareity_user AS npo ON dare.npo_creator = npo.id`,
+		function(err, result){
+		    const rows = (result.rows)
+				const users = {}
+		    if (err){
+		      callback(err.message)
+		    } else if (result){
+					const dares =  rows.filter((row) => row.pledge_amount_threshold)
+														  .map((row) => ({
+																userId: row.userId,
+																user: row.name,
+																pledge_amount_threshold: row.pledge_amount_threshold,
+																npo_id: row.npo_id,
+																video_path: row.video_path,
+																dare_id: row.dare_id,
+																title: row.title,
+																description: row.description,
+																total_pledge_amount: row.total_pledge_amount,
+																image_path: row.image_path,
+																npo_name: row.npoName
+															}))
+					const users = rows.reduce((users, row) => {
+						users[row.name] = {
+							id: row.userId,
+							name: row.name,
+							is_npo: row.is_npo,
+							email: row.email,
+							profilepic_path: row.profilepic_path,
+							bio: row.bio,
+							dares: []
+						}
+						return users
+					}, {})
+					dares.forEach(dare => users[dare.user].dares.push(dare))
+		      callback(null, _.values(users))
+		    } else {
+		      callback('No user found.')
+		    }
+		  })
 }
 
 
