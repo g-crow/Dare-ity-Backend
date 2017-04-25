@@ -103,6 +103,7 @@ User.fetchAllUsers = function(query, callback) {
 						dare.image_path,
 						dare.description,
 						user_dare.video_path,
+						user_dare.pledge_amount_threshold,
 						npo.name AS npo_name,
 						npo.id AS npo_id
 		 FROM dareity_user
@@ -124,6 +125,7 @@ User.fetchAllUsers = function(query, callback) {
 																video_path: row.video_path,
 																dare_id: row.dare_id,
 																title: row.title,
+																pledge_amount_threshold: row.pledge_amount_threshold,
 																description: row.description,
 																image_path: row.image_path,
 																npo_name: row.npo_name
