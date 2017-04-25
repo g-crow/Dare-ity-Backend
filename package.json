@@ -18,19 +18,20 @@
   },
   "homepage": "https://github.com/g-crow/Dare-ity#readme",
   "dependencies": {
+    "aws-sdk": "2.x",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.1",
+    "ejs": "2.x",
     "express": "^4.15.2",
     "jsonwebtoken": "^7.3.0",
     "lodash": "^4.17.4",
+    "moment": "^2.18.1",
     "morgan": "^1.8.1",
     "pg": "^6.1.5",
     "pg-connection-string": "^0.1.3",
     "pg-native": "^1.10.1",
     "react-stripe-checkout": "^2.2.5",
-    "stripe": "^4.17.1", 
-    "aws-sdk": "2.x",
-    "ejs": "2.x"
+    "stripe": "^4.17.1"
   },
   "devDependencies": {
     "chai": "^3.2.0",
