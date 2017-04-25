@@ -116,7 +116,7 @@ User.fetchAllUsers = function(query, callback) {
 		    if (err){
 		      callback(err.message)
 		    } else if (result){
-					const dares =  rows.filter((row) => row.dareId)
+					const dares =  rows.filter((row) => row.dare_id)
 														  .map((row) => ({
 																userId: row.user_id,
 																user: row.name,
