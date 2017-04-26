@@ -44,7 +44,7 @@ Dare.fetchDare = function(query, callback) {
 }
 
 Dare.fetchAllDares = function(query, callback) {
- const queryString = 'SELECT * from dare'
+ const queryString = 'SELECT * from dare JOIN dareity_user ON npo_creator = dareity_user.id'
  db.query(queryString, function(err, result) {
    const dares = result.rows
    if (err) {
@@ -83,7 +83,6 @@ Dare.setDare = function(query, callback) {
   			npo_id,
   			pledge_amount_threshold,
 				video_path,
-				mobile_video,
   		} = query;
   if (broadcaster_id === undefined || dare_id === undefined || npo_id === undefined || pledge_amount_threshold === undefined) {
     callback('Please set all required parameters.')
