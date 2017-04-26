@@ -90,46 +90,65 @@ User.fetchUser = function(query, callback) {
 }
 
 
-
-
 User.fetchAllUsers = function(query, callback) {
-  db.query('SELECT dareity_user.id AS userId, * FROM dareity_user LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id LEFT JOIN dare ON user_dare.dare_id = dare.id', function(err, result){
-    const rows = (result.rows)
-		const users = {}
-    if (err){
-      callback(err.message)
-    } else if (result){
-			const dares =  rows.filter((row) => row.pledge_amount_threshold)
-												  .map((row) => ({
-														userId: row.userId,
-														user: row.name,
-														pledge_amount_threshold: row.pledge_amount_threshold,
-														npo_id: row.npo_id,
-														video_path: row.video_path,
-														dare_id: row.dare_id,
-														title: row.title,
-														description: row.description,
-														total_pledge_amount: row.total_pledge_amount,
-														image_path: row.image_path
-													}))
-			const users = rows.reduce((users, row) => {
-				users[row.name] = {
-					id: row.userId,
-					name: row.name,
-					is_npo: row.is_npo,
-					email: row.email,
-					profilepic_path: row.profilepic_path,
-					bio: row.bio,
-					dares: []
-				}
-				return users
-			}, {})
-			dares.forEach(dare => users[dare.user].dares.push(dare))
-      callback(null, _.values(users))
-    } else {
-      callback('No user found.')
-    }
-  })
+  db.query(
+		`SELECT dareity_user.id AS user_id,
+						dareity_user.is_npo,
+						dareity_user.name,
+						dareity_user.email,
+						dareity_user.profilepic_path,
+						dareity_user.bio,
+						dare.id as dare_id,
+						dare.title,
+						dare.image_path,
+						dare.description,
+						user_dare.video_path,
+						user_dare.pledge_amount_threshold,
+						npo.name AS npo_name,
+						npo.id AS npo_id
+		 FROM dareity_user
+				LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id
+				LEFT JOIN dare ON user_dare.dare_id = dare.id
+				LEFT JOIN dareity_user AS npo ON dare.npo_creator = npo.id`,
+		function(err, result){
+		    const rows = (result.rows)
+				console.log('rows', rows)
+				const users = {}
+		    if (err){
+		      callback(err.message)
+		    } else if (result){
+					const dares =  rows.filter((row) => row.dare_id)
+														  .map((row) => ({
+																userId: row.user_id,
+																user: row.name,
+																npo_id: row.npo_id,
+																video_path: row.video_path,
+																dare_id: row.dare_id,
+																title: row.title,
+																pledge_amount_threshold: row.pledge_amount_threshold,
+																description: row.description,
+																image_path: row.image_path,
+																npo_name: row.npo_name
+															}))
+					const users = rows.reduce((users, row) => {
+						users[row.name] = {
+							id: row.user_id,
+							name: row.name,
+							is_npo: row.is_npo,
+							email: row.email,
+							profilepic_path: row.profilepic_path,
+							bio: row.bio,
+							dares: []
+						}
+						return users
+					}, {})
+					console.log('dares', dares)
+					dares.forEach(dare => users[dare.user].dares.push(dare))
+		      callback(null, _.values(users))
+		    } else {
+		      callback('No user found.')
+		    }
+		  })
 }
 
 
