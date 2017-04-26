@@ -93,21 +93,21 @@ User.fetchUser = function(query, callback) {
 User.fetchAllUsers = function(query, callback) {
   db.query(
 		`SELECT 						dareity_user.id AS user_id,
-						dareity_user.is_npo,
-						dareity_user.name,
-						dareity_user.email,
-						dareity_user.profilepic_path,
-						dareity_user.bio,
-						dare.id as dare_id,
-						dare.title,
-						dare.image_path,
-						dare.description,
-						user_dare.id AS user_dare_id,
-						user_dare.video_path,
-						user_dare.pledge_amount_threshold,
-						npo.name AS npo_name,
-						npo.id AS npo_id,
-						pledge_totals.total_pledges
+												dareity_user.is_npo,
+												dareity_user.name,
+												dareity_user.email,
+												dareity_user.profilepic_path,
+												dareity_user.bio,
+												dare.id as dare_id,
+												dare.title,
+												dare.image_path,
+												dare.description,
+												user_dare.id AS user_dare_id,
+												user_dare.video_path,
+												user_dare.pledge_amount_threshold,
+												npo.name AS npo_name,
+												npo.id AS npo_id,
+												pledge_totals.total_pledges
 
 			FROM dareity_user
 				LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id
@@ -135,7 +135,7 @@ User.fetchAllUsers = function(query, callback) {
 																image_path: row.image_path,
 																npo_name: row.npo_name,
 																user_dare_id: row.user_dare_id,
-																total_pledges: total_pledges
+																total_pledges: row.total_pledges
 															}))
 					const users = rows.reduce((users, row) => {
 						users[row.name] = {
