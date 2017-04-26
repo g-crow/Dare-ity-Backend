@@ -129,7 +129,8 @@ User.fetchAllUsers = function(query, callback) {
 																pledge_amount_threshold: row.pledge_amount_threshold,
 																description: row.description,
 																image_path: row.image_path,
-																npo_name: row.npo_name
+																npo_name: row.npo_name,
+																user_dare_id: row.user_dare_id
 															}))
 					const users = rows.reduce((users, row) => {
 						users[row.name] = {
