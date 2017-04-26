@@ -1,13 +1,13 @@
 const Pledge = require('../models/pledge');
-const keyPublishable = "pk_test_BN1prVDcCZgCOaRMmJ6IrCaF";
-const keySecret = "sk_test_0UF8Em57PInn7CqspRGhmuu8";
+const keyPublishable = "pk_test_O127XMYBkWs2vpiyD7G9bS2g";
+const keySecret = "sk_test_Q0OUXBuRmmuMKNQvi4qqDTwq";
 const stripe = require("stripe")(keySecret);
 
 const createPledge = function(req, res){
     const {
         pledger_id,
         broadcaster_id,
-        dare_id, 
+        dare_id,
         npo_id,
         user_dare_id,
         pledge_amount,
@@ -65,4 +65,3 @@ const updatePledge = function(req, res) {
 }
 
 module.exports = { createPledge, createStripePledge, fetchPledge, updatePledge }
-
