@@ -13,6 +13,7 @@ const createPledge = function(req, res){
         pledge_amount,
         to_refund
         } = req.body
+        console.log(pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund, 'look here')
     var pledge = new Pledge(pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund)
     pledge.save((err, pledge) => err ? res.status(500).json(err) : res.json(pledge))
 }
