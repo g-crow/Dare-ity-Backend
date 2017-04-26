@@ -113,7 +113,7 @@ User.fetchAllUsers = function(query, callback) {
 				LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id
 				LEFT JOIN dare ON user_dare.dare_id = dare.id
 				LEFT JOIN dareity_user AS npo ON dare.npo_creator = npo.id
-				JOIN (SELECT user_dare_id, sum(pledge_amount) as total_pledges FROM pledge GROUP BY user_dare_id) AS pledge_totals ON user_dare.id = pledge_totals.user_dare_id
+				LEFT JOIN (SELECT user_dare_id, sum(pledge_amount) as total_pledges FROM pledge GROUP BY user_dare_id) AS pledge_totals ON user_dare.id = pledge_totals.user_dare_id
 			`,
 		function(err, result){
 		    const rows = (result.rows)
