@@ -102,6 +102,7 @@ User.fetchAllUsers = function(query, callback) {
 						dare.title,
 						dare.image_path,
 						dare.description,
+						user_dare.id AS user_dare_id,
 						user_dare.video_path,
 						user_dare.pledge_amount_threshold,
 						npo.name AS npo_name,
