@@ -96,4 +96,4 @@ const deleteRecord = function(req, res){
   })
 }
 
-module.exports = { createuser, authenticate, fetchUser, fetchAllUsers, updateUser, deleteRecord }
+module.exports = { createuser, authenticate, fetchUser, fetchAllUsers, updateUser, deleteRecord, fetchUserById }
