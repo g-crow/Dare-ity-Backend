@@ -92,29 +92,25 @@ User.fetchUser = function(query, callback) {
 
 User.fetchAllUsers = function(query, callback) {
   db.query(
-		`SELECT 						dareity_user.id AS user_id,
-												dareity_user.is_npo,
-												dareity_user.name,
-												dareity_user.email,
-												dareity_user.profilepic_path,
-												dareity_user.bio,
-												dare.id as dare_id,
-												dare.title,
-												dare.image_path,
-												dare.description,
-												user_dare.id AS user_dare_id,
-												user_dare.video_path,
-												user_dare.pledge_amount_threshold,
-												npo.name AS npo_name,
-												npo.id AS npo_id,
-												pledge_totals.total_pledges
-
-			FROM dareity_user
+		`SELECT dareity_user.id AS user_id,
+						dareity_user.is_npo,
+						dareity_user.name,
+						dareity_user.email,
+						dareity_user.profilepic_path,
+						dareity_user.bio,
+						dare.id as dare_id,
+						dare.title,
+						dare.image_path,
+						dare.description,
+						user_dare.id AS user_dare_id,
+						user_dare.video_path,
+						user_dare.pledge_amount_threshold,
+						npo.name AS npo_name,
+						npo.id AS npo_id
+		 FROM dareity_user
 				LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id
 				LEFT JOIN dare ON user_dare.dare_id = dare.id
-				LEFT JOIN dareity_user AS npo ON dare.npo_creator = npo.id
-				LEFT JOIN (SELECT user_dare_id, sum(pledge_amount) as total_pledges FROM pledge GROUP BY user_dare_id) AS pledge_totals ON user_dare.id = pledge_totals.user_dare_id
-			`,
+				LEFT JOIN dareity_user AS npo ON dare.npo_creator = npo.id`,
 		function(err, result){
 		    const rows = (result.rows)
 				console.log('rows', rows)
@@ -133,9 +129,7 @@ User.fetchAllUsers = function(query, callback) {
 																pledge_amount_threshold: row.pledge_amount_threshold,
 																description: row.description,
 																image_path: row.image_path,
-																npo_name: row.npo_name,
-																user_dare_id: row.user_dare_id,
-																total_pledges: row.total_pledges
+																npo_name: row.npo_name
 															}))
 					const users = rows.reduce((users, row) => {
 						users[row.name] = {
