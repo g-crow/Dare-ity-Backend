@@ -186,12 +186,13 @@ User.fetchAllUsers = function(query, callback) {
 				LEFT JOIN (SELECT user_dare_id, sum(pledge_amount) as total_pledges FROM pledge GROUP BY user_dare_id) AS pledge_totals ON user_dare.id = pledge_totals.user_dare_id
 			`,
 		function(err, result){
-		    const rows = (result.rows)
-				console.log('rows', rows)
-				const users = {}
+
 		    if (err){
 		      callback(err.message)
 		    } else if (result){
+		    		const rows = (result.rows)
+					console.log('rows', rows)
+					const users = {}
 					const dares =  rows.filter((row) => row.dare_id)
 														  .map((row) => ({
 																userId: row.user_id,
