@@ -91,8 +91,8 @@ apiRoutes.post('/fetch_all_users', userController.fetchAllUsers);
 //DARE ROUTES
 apiRoutes.post('/create_dare', requireLogin, dareController.createDare);
 apiRoutes.post('/fetch_dare', dareController.fetchDare);
-apiRoutes.post('/update_dare', requireLogin, dareController.updateDare);
 apiRoutes.post('/fetch_all_dares', dareController.fetchAllDares);
+apiRoutes.post('/update_dare', requireLogin, dareController.updateDare);
 
 //USER_DARE ROUTES
 apiRoutes.post('/set_user_dare', requireLogin, dareController.setDare);
