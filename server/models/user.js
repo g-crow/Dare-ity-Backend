@@ -135,7 +135,7 @@ User.fetchAllUsers = function(query, callback) {
 																image_path: row.image_path,
 																npo_name: row.npo_name,
 																user_dare_id: row.user_dare_id,
-																total_pledges: total_pledges
+																total_pledges: row.total_pledges
 															}))
 					const users = rows.reduce((users, row) => {
 						users[row.name] = {
