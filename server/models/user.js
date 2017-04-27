@@ -164,22 +164,21 @@ User.fetchUserById = function(id, callback) {
 User.fetchAllUsers = function(query, callback) {
   db.query(
 		`SELECT 						dareity_user.id AS user_id,
-						dareity_user.is_npo,
-						dareity_user.name,
-						dareity_user.email,
-						dareity_user.profilepic_path,
-						dareity_user.bio,
-						dare.id as dare_id,
-						dare.title,
-						dare.image_path,
-						dare.description,
-						user_dare.id AS user_dare_id,
-						user_dare.video_path,
-						user_dare.pledge_amount_threshold,
-						npo.name AS npo_name,
-						npo.id AS npo_id,
-						pledge_totals.total_pledges
-
+												dareity_user.is_npo,
+												dareity_user.name,
+												dareity_user.email,
+												dareity_user.profilepic_path,
+												dareity_user.bio,
+												dare.id as dare_id,
+												dare.title,
+												dare.image_path,
+												dare.description,
+												user_dare.id AS user_dare_id,
+												user_dare.video_path,
+												user_dare.pledge_amount_threshold,
+												npo.name AS npo_name,
+												npo.id AS npo_id,
+												pledge_totals.total_pledges
 			FROM dareity_user
 				LEFT JOIN user_dare ON dareity_user.id = user_dare.broadcaster_id
 				LEFT JOIN dare ON user_dare.dare_id = dare.id
@@ -220,7 +219,7 @@ User.fetchAllUsers = function(query, callback) {
 						}
 						return users
 					}, {})
-					console.log('users', users)
+					console.log('dares', dares)
 					dares.forEach(dare => users[dare.user].dares.push(dare))
 		      callback(null, _.values(users))
 		    } else {
