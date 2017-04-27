@@ -48,7 +48,7 @@ const fetchUserById = function(req, res){
     } else {
       res.json({
                 success: true,
-                result: result
+                result: user
               });
     }
   })
