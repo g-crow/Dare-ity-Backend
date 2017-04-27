@@ -1,6 +1,6 @@
 const Pledge = require('../models/pledge');
-const keyPublishable = "pk_test_O127XMYBkWs2vpiyD7G9bS2g";
-const keySecret = "sk_test_Q0OUXBuRmmuMKNQvi4qqDTwq";
+const keyPublishable = "pk_test_v6QLSEz0D56yn11jXluFUZM7";
+const keySecret = "sk_test_H5hFTrUbvNvCsAvLqkDp9Oi2";
 const stripe = require("stripe")(keySecret);
 
 const createPledge = function(req, res){
