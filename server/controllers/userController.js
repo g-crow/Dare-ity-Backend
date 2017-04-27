@@ -41,7 +41,8 @@ const fetchUser = function(req, res) {
 }
 
 const fetchUserById = function(req, res){
-  User.fetchUserById(req.body.params.id, function(err, user){
+  console.log()
+  User.fetchUserById(req.params.id, function(err, user){
     if (err){
       res.status(400).json({success: false, message: err})
     } else {
