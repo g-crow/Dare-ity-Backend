@@ -44,8 +44,7 @@ Dare.fetchDare = function(query, callback) {
 }
 
 Dare.fetchAllDares = function(query, callback) {
- const queryString =
- `SELECT 							dare.id AS dare_id,
+ db.query(`SELECT 							dare.id AS dare_id,
 															dare.title,
 															dare.description,
 															dare.npo_creator,
@@ -57,7 +56,7 @@ Dare.fetchAllDares = function(query, callback) {
 
 
 FROM dare JOIN dareity_user ON npo_creator = dareity_user.id`,
- db.query(queryString, function(err, result) {
+function(err, result) {
    const dares = result.rows
    if (err) {
      callback(err.message)
