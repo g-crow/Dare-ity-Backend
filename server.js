@@ -91,14 +91,14 @@ apiRoutes.post('/fetch_all_users', userController.fetchAllUsers);
 //DARE ROUTES
 apiRoutes.post('/create_dare', requireLogin, dareController.createDare);
 apiRoutes.post('/fetch_dare', dareController.fetchDare);
-apiRoutes.post('/fetch_all_dares', dareController.fetchAllDares);
 apiRoutes.post('/update_dare', requireLogin, dareController.updateDare);
+apiRoutes.post('/fetch_all_dares', dareController.fetchAllDares);
 
 //USER_DARE ROUTES
 apiRoutes.post('/set_user_dare', requireLogin, dareController.setDare);
 apiRoutes.post('/fetch_user_dare', dareController.fetchUserDare);
-apiRoutes.post('/update_user_dare', requireLogin, dareController.updateUserDare);
 apiRoutes.post('/fetch_all_user_dares', dareController.fetchAllUserDares);
+apiRoutes.post('/update_user_dare', requireLogin, dareController.updateUserDare);
 
 //PLEDGE ROUTES
 app.post("/save-stripe-token", pledgeController.createStripePledge);
