@@ -67,7 +67,7 @@ app.use(morgan('dev'));
 
 db.connect(function(err, result){
   if(err) {
-    throw err
+    console.log(err, 'err')
   }
   console.log('Connected to DB')
 })
