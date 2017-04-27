@@ -87,6 +87,7 @@ apiRoutes.post('/authenticate', userController.authenticate);
 apiRoutes.post('/fetch_user', userController.fetchUser);
 apiRoutes.post('/update_user', requireLogin, userController.updateUser);
 apiRoutes.post('/fetch_all_users', userController.fetchAllUsers);
+apiRoutes.get('/fetch_user/:id', userController.fetchUserById)
 
 //DARE ROUTES
 apiRoutes.post('/create_dare', requireLogin, dareController.createDare);

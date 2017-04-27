@@ -40,6 +40,19 @@ const fetchUser = function(req, res) {
   })
 }
 
+const fetchUserById = function(req, res){
+  User.fetchUserById(req.body.params.id, function(err, user){
+    if (err){
+      res.status(400).json({success: false, message: err})
+    } else {
+      res.json({
+                success: true,
+                result: result
+              });
+    }
+  })
+}
+
 const fetchAllUsers = function(req, res) {
   const { query } = req.body;
   User.fetchAllUsers(query, (err, result) => {
