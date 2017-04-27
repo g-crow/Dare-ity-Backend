@@ -109,7 +109,11 @@ Dare.setDare = function(query, callback) {
 }
 
 Dare.fetchUserDare = function(query, callback) {
-  const queryString = 'SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status FROM user_dare WHERE id = $1 OR broadcaster_id = $1 OR dare_id = $1 OR npo_id = $1'
+  const queryString = `SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status, title, description, total_pledges
+                        FROM user_dare 
+                          JOIN dare ON user_dare.dare_id=dare.id
+                          LEFT JOIN (SELECT user_dare_id, sum(pledge_amount) as total_pledges FROM pledge GROUP BY user_dare_id) AS pledge_totals ON user_dare.id = pledge_totals.user_dare_id
+                        WHERE id = $1 OR broadcaster_id = $1 OR dare_id = $1 OR npo_id = $1`
   db.query(queryString, [query], function(err, result) {
      const match = _.get(result, 'rows[0]')
     if (err) {
