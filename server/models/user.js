@@ -192,7 +192,6 @@ User.fetchAllUsers = function(query, callback) {
 		    } else if (result){
 		    		const rows = (result.rows)
 					console.log('rows', rows)
-					const users = {}
 					const dares =  rows.filter((row) => row.dare_id)
 														  .map((row) => ({
 																userId: row.user_id,
