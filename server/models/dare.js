@@ -18,6 +18,7 @@ class Dare{
 			const queryString = `INSERT INTO dare (title, description, npo_creator, expiration, pledge_threshold, image_path) VALUES ('${this.title}', '${this.description}', ${this.npo_creator}, '${this.expiration}', ${this.pledge_threshold}, '${this.image_path}')`
 			db.query(queryString, function(err, result) {
 			    if (err) {
+						console.log(err)
 			      callback('Sorry, please try again')
 			    } else {
 			      callback(null, result)
