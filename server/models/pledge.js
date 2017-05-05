@@ -30,7 +30,7 @@ class Pledge {
 
 Pledge.fetchPledge = function(id, callback) {
   const queryString = `SELECT id, pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund FROM pledge WHERE id = $1`
-  db.query(queryString, [id] function(err, result) {
+  db.query(queryString, [id], function(err, result) {
     if(err){
       callback(err.message)
     } else if(result.rows[0]){
