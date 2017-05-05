@@ -234,6 +234,8 @@ User.updateUser = function(query, id, callback) {
   let columns = ''
   if (query.is_npo) columns += `is_npo = ${query.is_npo}, `
   if (query.email) columns += `email = '${query.email}', `
+  if (query.profilepic_path) columns += `profilepic_path = '${query.profilepic_path}', `
+  if (query.bio) columns += `bio = '${query.bio}', `
   columns = columns.replace(/, $/, '')
   const queryString = `UPDATE dareity_user SET ${columns} WHERE id = $1`
   db.query(queryString, [id], function(err, result) {
