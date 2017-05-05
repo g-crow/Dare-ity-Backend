@@ -250,8 +250,8 @@ User.updateUser = function(query, id, callback) {
 
 User.deleteRecord = function(query, callback){
   const {table_name, id} = query;
-  var queryString = `DELETE FROM ${table_name} WHERE id = ${id} RETURNING *`
-  db.query(queryString, function(err, result){
+  var queryString = `DELETE FROM ${table_name} WHERE id = $1 RETURNING *`
+  db.query(queryString, [id], function(err, result){
     if(err){
       callback('Sorry, please try again')
     } else {

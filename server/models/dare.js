@@ -76,9 +76,10 @@ Dare.updateDare = function(query, id, callback) {
  if (query.npo_creator) columns += `npo_creator = ${query.npo_creator}, `
  if (query.expiration) columns += `expiration = '${query.expiration}', `
  if (query.pledge_threshold) columns += `pledge_threshold = ${query.pledge_threshold}, `
+ if (query.image_path) columns += `image_path = ${query.image_path}, `
  columns = columns.replace(/, $/, '')
- const queryString = `UPDATE dare SET ${columns} WHERE id = ${id}`
- db.query(queryString, function(err, result) {
+ const queryString = `UPDATE dare SET ${columns} WHERE id = $1`
+ db.query(queryString, [id], function(err, result) {
    if (err) {
      callback('Sorry, please try again')
    } else {
