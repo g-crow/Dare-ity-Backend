@@ -235,8 +235,8 @@ User.updateUser = function(query, id, callback) {
   if (query.is_npo) columns += `is_npo = ${query.is_npo}, `
   if (query.email) columns += `email = '${query.email}', `
   columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${id}`
-  db.query(queryString, function(err, result) {
+  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = $1`
+  db.query(queryString, [id], function(err, result) {
     console.log('result', result);
     if (err) {
       callback('Sorry, please try again')
