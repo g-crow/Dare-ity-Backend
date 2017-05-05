@@ -22,8 +22,8 @@ class User{
 			bcrypt.hash(this.password, config.saltRounds, (hashErr, hashed_password) => {
 				if (!hashErr){
 					const queryString = `INSERT INTO dareity_user (name, password, email, bio, is_npo, profilepic_path)
-          VALUES ('${this.name}', '${hashed_password}', '${this.email}', '${this.bio}', ${this.is_npo}, '${this.profilepic_path}') RETURNING *`
-					db.query(queryString, callback)
+          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`
+					db.query(queryString, [this.name, hashed_password, this.email, this.bio, this.is_npo, this.profilepic_path ], callback)
 				} else {
 					callback(hashErr)
 				}
@@ -33,7 +33,7 @@ class User{
 }
 
 User.authenticate = function(name, password, callback){
-  db.query(`SELECT name, id, is_npo, password, profilepic_path FROM dareity_user WHERE name = '${name}'`,
+  db.query(`SELECT name, id, is_npo, password, profilepic_path FROM dareity_user WHERE name = $1`,[name],
   function(err, result) {
     const user = result.rows[0]
     if (err) throw err;
@@ -234,9 +234,11 @@ User.updateUser = function(query, id, callback) {
   let columns = ''
   if (query.is_npo) columns += `is_npo = ${query.is_npo}, `
   if (query.email) columns += `email = '${query.email}', `
+  if (query.profilepic_path) columns += `profilepic_path = '${query.profilepic_path}', `
+  if (query.bio) columns += `bio = '${query.bio}', `
   columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = ${id}`
-  db.query(queryString, function(err, result) {
+  const queryString = `UPDATE dareity_user SET ${columns} WHERE id = $1`
+  db.query(queryString, [id], function(err, result) {
     console.log('result', result);
     if (err) {
       callback('Sorry, please try again')
@@ -248,8 +250,8 @@ User.updateUser = function(query, id, callback) {
 
 User.deleteRecord = function(query, callback){
   const {table_name, id} = query;
-  var queryString = `DELETE FROM ${table_name} WHERE id = ${id} RETURNING *`
-  db.query(queryString, function(err, result){
+  var queryString = `DELETE FROM ${table_name} WHERE id = $1 RETURNING *`
+  db.query(queryString, [id], function(err, result){
     if(err){
       callback('Sorry, please try again')
     } else {

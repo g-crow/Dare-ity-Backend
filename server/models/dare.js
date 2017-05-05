@@ -76,9 +76,10 @@ Dare.updateDare = function(query, id, callback) {
  if (query.npo_creator) columns += `npo_creator = ${query.npo_creator}, `
  if (query.expiration) columns += `expiration = '${query.expiration}', `
  if (query.pledge_threshold) columns += `pledge_threshold = ${query.pledge_threshold}, `
+ if (query.image_path) columns += `image_path = ${query.image_path}, `
  columns = columns.replace(/, $/, '')
- const queryString = `UPDATE dare SET ${columns} WHERE id = ${id}`
- db.query(queryString, function(err, result) {
+ const queryString = `UPDATE dare SET ${columns} WHERE id = $1`
+ db.query(queryString, [id], function(err, result) {
    if (err) {
      callback('Sorry, please try again')
    } else {
@@ -109,11 +110,11 @@ Dare.setDare = function(query, callback) {
 }
 
 Dare.fetchUserDare = function(query, callback) {
-  const queryString = `SELECT id, broadcaster_id, dare_id, pledge_amount_threshold, npo_id, pledge_status, title, description, total_pledges
+  const queryString = `SELECT user_dare.id, user_dare.broadcaster_id, user_dare.dare_id, user_dare.pledge_amount_threshold, user_dare.npo_id, dare.title, dare.description, total_pledges
                         FROM user_dare 
                           JOIN dare ON user_dare.dare_id=dare.id
                           LEFT JOIN (SELECT user_dare_id, sum(pledge_amount) as total_pledges FROM pledge GROUP BY user_dare_id) AS pledge_totals ON user_dare.id = pledge_totals.user_dare_id
-                        WHERE id = $1 OR broadcaster_id = $1 OR dare_id = $1 OR npo_id = $1`
+                        WHERE user_dare.id = $1 OR user_dare.broadcaster_id = $1 OR user_dare.dare_id = $1 OR user_dare.npo_id = $1`
   db.query(queryString, [query], function(err, result) {
      const match = _.get(result, 'rows[0]')
     if (err) {
@@ -141,22 +142,6 @@ console.log(query, '!!!!!!!!!!!!!!!!!!!!!!!!!!');
    }
  })
 }
-//
-// Dare.fetchAllUserDares = function(query, callback) {
-// console.log(query, '!!!!!!!!!!!!!!!!!!!!!!!!!!');
-//  const queryString = `SELECT * from user_dare WHERE broadcaster_id = ${query.broadcaster_id}`
-//  db.query(queryString, function(err, result) {
-// 	 console.log(result);
-//    const match = _.get(result, 'rows')
-//    if (err) {
-//      callback(err.message)
-//    } else if (match) {
-//      callback(null, match)
-//    } else {
-//      callback('No dares found.')
-//    }
-//  })
-// }
 
 Dare.updateUserDare = function(query, callback) {
   let columns = ''
@@ -164,11 +149,10 @@ Dare.updateUserDare = function(query, callback) {
   if (query.dare_id) columns += `dare_id = ${query.dare_id}, `
   if (query.npo_id) columns += `npo_id = ${query.npo_id}, `
   if (query.pledge_amount_threshold) columns += `pledge_amount_threshold = ${query.pledge_amount_threshold}, `
-  if (query.pledge_status) columns += `pledge_status = ${query.pledge_status}, `
 	if (query.video_path) columns += `video_path = '${query.video_path}', `
   columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE user_dare SET ${columns} WHERE id = ${query.id}`
-  db.query(queryString, function(err, result) {
+  const queryString = `UPDATE user_dare SET ${columns} WHERE id = $1`
+  db.query(queryString, [query.id], function(err, result) {
     if (err) {
      console.log('ERRORRRRRR', err)
      callback('Sorry, please try again')
