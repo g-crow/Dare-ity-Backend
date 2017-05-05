@@ -29,8 +29,8 @@ class Pledge {
 }
 
 Pledge.fetchPledge = function(id, callback) {
-  const queryString = `SELECT id, pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund FROM pledge WHERE id = ${id}`
-  db.query(queryString, function(err, result) {
+  const queryString = `SELECT id, pledger_id, broadcaster_id, dare_id, npo_id, user_dare_id, pledge_amount, to_refund FROM pledge WHERE id = $1`
+  db.query(queryString, [id] function(err, result) {
     if(err){
       callback(err.message)
     } else if(result.rows[0]){
@@ -51,8 +51,8 @@ Pledge.updatePledge = function(query, callback) {
   if (query.pledge_amount) columns += `pledge_amount = ${query.pledge_amount}, `
   if (query.to_refund) columns += `to_refund = ${query.to_refund}, `
   columns = columns.replace(/, $/, '')
-  const queryString = `UPDATE pledge SET ${columns} WHERE id = ${query.id}`
-  db.query(queryString, function(err, result) {
+  const queryString = `UPDATE pledge SET ${columns} WHERE id = $1`
+  db.query(queryString, [query.id], function(err, result) {
     if (err) {
       callback('Sorry, please try again')
     } else {
